@@ -58,7 +58,13 @@ assert.equal(result, "Billy");
 var result = funex("kidsObj['second']", context);
 assert.equal(result, "Julia");
 
-
+// todo: function calls with multiple arguments
+// todo: check for missuse of dot notation
+// todo: check for missuse of whitespaces
+// todo: raise exception on unrecognized syntax
+// todo: support for arrays declarations
+// todo: support for arrays declarations with multiple item and depth
+// todo: literal object syntax
 
 
 
