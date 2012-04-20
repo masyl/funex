@@ -22,10 +22,24 @@ var context = {
 	}
 };
 
+// Simple variable access
 var result = funex("lorem", context);
 assert.equal(result, "ipsum");
 
+// Simple string
+var result = funex("'TEST'", context);
+assert.equal(result, "TEST");
+
+// Simple number
+var result = funex("12345", context);
+assert.equal(result, 12345);
+
+// Dot notation
 var result = funex("kidsObj.first", context);
+assert.equal(result, "Billy");
+
+// Dot notation with whitespace
+var result = funex("  kidsObj.first  ", context);
 assert.equal(result, "Billy");
 
 // Function call with no argument
@@ -36,12 +50,17 @@ assert.equal(result, "Billy, Julia");
 var result = funex("getKid(1)", context);
 assert.equal(result, "Julia");
 
-/*
-// Function call with a single argument
-var result = funex("allKids()", context);
-assert.equal(result, "Billy, Julia");
- */
+// Array call with number
+var result = funex("kids[0]", context);
+assert.equal(result, "Billy");
+
+// Array call with number
+var result = funex("kidsObj['second']", context);
+assert.equal(result, "Julia");
 
 
-//funex("lorem.patate('this, is not', val[0], this)", context);
-//funex("{ a:[1,2] , b:[3,4] }", context);
+
+
+
+
+
