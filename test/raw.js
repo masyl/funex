@@ -10,6 +10,9 @@ var context = {
 		first: "Billy",
 		second: "Julia"
 	},
+	join: function (a, b) {
+		return a +"-" + b;
+	},
 	kids: [
 		"Billy",
 		"Julia"
@@ -19,8 +22,14 @@ var context = {
 	},
 	getKid: function (i) {
 		return this.kids[i]
+	},
+	plus3: function (a, b, c) {
+		return a + b + c;
 	}
 };
+/*
+
+*/
 
 // Simple variable access
 var result = funex("lorem", context);
@@ -57,6 +66,14 @@ assert.equal(result, "Billy");
 // Array call with number
 var result = funex("kidsObj['second']", context);
 assert.equal(result, "Julia");
+
+// Function call with multiple arguments
+var result = funex("plus3(1, 2, 3)", context);
+assert.equal(result, 6);
+
+// Function call with multiple complex arguments
+var result = funex("join(kidsObj.first, kidsObj.second)", context);
+assert.equal(result, "Billy-Julia");
 
 // todo: function calls with multiple arguments
 // todo: check for missuse of dot notation
