@@ -1,4 +1,5 @@
 var
+		cycles = 1000000,
 		evalComparison = false,
 		fixtures = require("./fixtures");
 		runner = require("./runner");
@@ -19,4 +20,4 @@ var tests = [
 		,["Function call with multiple complex arguments", "join(kidsObj.first, kidsObj.second)", "Billy-Julia"]
 ];
 
-runner(tests, fixtures, 1000, evalComparison);
+runner(tests, fixtures, cycles, evalComparison);
