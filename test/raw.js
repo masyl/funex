@@ -27,63 +27,24 @@ var context = {
 		return a + b + c;
 	}
 };
-/*
 
-*/
-
-// Simple variable access
-var result = funex("lorem", context);
-assert.equal(result, "ipsum");
-
-// Simple string
-var result = funex("'TEST'", context);
-assert.equal(result, "TEST");
-
-// Simple number
-var result = funex("12345", context);
-assert.equal(result, 12345);
-
-// Dot notation
-var result = funex("kidsObj.first", context);
-assert.equal(result, "Billy");
-
-// Dot notation with whitespace
-var result = funex("  kidsObj.first  ", context);
-assert.equal(result, "Billy");
-
-// Function call with no argument
-var result = funex("allKids()", context);
-assert.equal(result, "Billy, Julia");
-
-// Function call with a multiple argument
-var result = funex("getKid(1)", context);
-assert.equal(result, "Julia");
-
-// Array call with number
-var result = funex("kids[0]", context);
-assert.equal(result, "Billy");
-
-// Array call with number
-var result = funex("kidsObj['second']", context);
-assert.equal(result, "Julia");
-
-// Function call with multiple arguments
-var result = funex("plus3(1, 2, 3)", context);
-assert.equal(result, 6);
-
-// Function call with multiple complex arguments
-var result = funex("join(kidsObj.first, kidsObj.second)", context);
-assert.equal(result, "Billy-Julia");
-
-// todo: function calls with multiple arguments
-// todo: check for missuse of dot notation
-// todo: check for missuse of whitespaces
-// todo: raise exception on unrecognized syntax
-// todo: support for arrays declarations
-// todo: support for arrays declarations with multiple item and depth
-// todo: literal object syntax
-
-
-
-
-
+// test name, expression, expected
+var testSuite = [
+		["Simple variable access", "lorem", "ipsum"],
+		["Simple string", "'TEST'", "TEST"],
+		["Simple number", "12345", "12345"],
+		["Dot notation", "kidsObj.first", "Billy"],
+		["Dot notation with whitespace", "  kidsObj.first  ", "Billy"],
+		["Dot notation with whitespace around the dot", "  kidsObj  .  first  ", "Billy"],
+		["Function call with no argument", "allKids()", "Billy, Julia"],
+		["Function call with a multiple argument", "getKid(1)", "Julia"],
+		["Array call with number", "kids[0]", "Billy"],
+		["Array call with string", "kidsObj['second']", "Julia"],
+		["Function call with multiple arguments", "plus3(1, 2, 3)", 6],
+		["Function call with multiple complex arguments", "join(kidsObj.first, kidsObj.second)", "Billy-Julia"],
+		[
+			"Function calls inside function calls",
+			"join(join(kidsObj.first, kidsObj.second), join(kidsObj.second, kidsObj.first))",
+			"Billy-Julia-Billy-Julia"
+		]
+];
