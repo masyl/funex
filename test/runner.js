@@ -10,14 +10,17 @@ module.exports = function (tests, fixtures, cycles, evalComparison) {
 	describe("With a series of tests and fixtures, repeated " + cycles + " times", function () {
 		var
 				i,
+				options,
 				singleTest;
 		for (i = 0; i < tests.length; i++) {
 			singleTest = tests[i];
-			test(singleTest[0], singleTest[1], singleTest[2], cycles, evalComparison);
+			options = {};
+			if (singleTest.length === 4) options = singleTest[3];
+			test(singleTest[0], singleTest[1], singleTest[2], options, cycles, evalComparison);
 		}
 	});
 
-	function test(testName, expression, expected, cycles, evalCompare) {
+	function test(testName, expression, expected, options, cycles, evalCompare) {
 		var funex1 = funex(expression);
 		describe(testName + " : " + expression, function () {
 			var result;
@@ -42,10 +45,21 @@ module.exports = function (tests, fixtures, cycles, evalComparison) {
 
 			function testFn() {
 				it('Should equal "' + expected + '"', function() {
-					for (var i = 0; i < cycles; i++) {
-						result = funex1(fixtures);
+					var i;
+					if (options.isException) {
+						try {
+							for (i = 0; i < cycles; i++) {
+								result = funex1(fixtures);
+							}
+						} catch (e) {
+							e.should.equal(expected);
+						}
+					} else {
+						for (i = 0; i < cycles; i++) {
+							result = funex1(fixtures);
+						}
+						result.should.equal(expected);
 					}
-					result.should.equal(expected);
 				});
 			}
 

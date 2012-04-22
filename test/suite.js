@@ -28,6 +28,31 @@ var tests = [
 			"Function call within function calls with multiple complex arguments",
 			"join(join(kidsObj.first, kidsObj.second), join(kidsObj.second, kidsObj.first))",
 			"Billy-Julia-Julia-Billy"
+		], [
+			"Exception thrown when using function call parens not on a function",
+			"()",
+			"Type error: undefined is not a function : ()",
+			{isException: true}
+		], [
+			"Exception thrown when using function call parens on undefined",
+			"someBogusVar()",
+			"Type error: undefined is not a function : someBogusVar()",
+			{isException: true}
+		], [
+			"Exception when expression contains one closing parens too many",
+			"join('a', 'b'))",
+			"Syntax error : Illegal call : join(a, b))",
+			{isException: true}
+		], [
+			"Exception when trying to use literal object notation",
+			"join({a:3}, 'b'))",
+			"Syntax error : join({",
+			{isException: true}
+		], [
+			"Exception when trying to use arythmetic operations",
+			"join(2 + 3, 'b'))",
+			"Syntax error : join(2 +",
+			{isException: true}
 		]
 ];
 
