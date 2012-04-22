@@ -1,5 +1,5 @@
 var
-		cycles = 10000,
+		cycles = 1,
 		evalComparison = false,
 		fixtures = require("./fixtures");
 		runner = require("./runner");
@@ -52,6 +52,21 @@ var tests = [
 			"Exception when trying to use arythmetic operations",
 			"join(2 + 3, 'b'))",
 			"Syntax error : join(2 +",
+			{isException: true}
+		], [
+			"Exception when using comma outside of a function call",
+			"2, 3, 4",
+			"Syntax error : 2,",
+			{isException: true}
+		], [
+			"Exception when ",
+			"2 4 4",
+			"",
+			{isException: true}
+		], [
+			"Exception when ",
+			"'abc' 4",
+			"",
 			{isException: true}
 		]
 ];
