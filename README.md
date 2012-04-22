@@ -15,7 +15,7 @@ Example usage:
 - Throws readable syntax errors
 - Runs both in browser and on the server
 - No complex api or configuration, a single function to use
-- Evaluated expressions can be cached
+- Compiled expressions can be cached and reused
 - Minimal overhead compared to native code
 - Extensive test suite and benchmarking
 - Open source and maintained on Github
