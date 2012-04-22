@@ -45,15 +45,16 @@ module.exports = function (tests, fixtures, cycles, evalComparison) {
 
 			function testFn() {
 				it('Should equal "' + expected + '"', function() {
-					var i;
+					var i, e, err = "";
 					if (options.isException) {
 						try {
 							for (i = 0; i < cycles; i++) {
 								result = funex1(fixtures);
 							}
 						} catch (e) {
-							e.should.equal(expected);
+							err = e;
 						}
+						err.should.equal(expected);
 					} else {
 						for (i = 0; i < cycles; i++) {
 							result = funex1(fixtures);
