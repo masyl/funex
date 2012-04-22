@@ -8,15 +8,15 @@ Example usage:
 
 ## Features
 - Expressions are evaluated and executed in a controled and secure scope
-- Minified source is under 2k (under 1k gzipped).
+- Minified source is under 2k (under 1k gzipped)
 - Function calls, dot notation, array/object members, strings, numbers
 - The syntax is a familiar subset of javascript
-- Simple because it is logic-less: no operators, statements or boolean logic.
+- Simple because it is logic-less: no operators, statements or boolean logic
 - Throws readable syntax errors
 - Runs both in browser and on the server
 - No complex api or configuration, a single function to use
 - Evaluated expressions can be cached
-- Minimal overhead compared to native code.
+- Minimal overhead compared to native code
 - Extensive test suite and benchmarking
 - Open source and maintained on Github
 
@@ -29,9 +29,9 @@ compromising security
 
 ## Installation
 
-For now it is a single "funex.js" file, but it should soon be on node npm.
+For now it is a single "funex.js" file, but it should soon be on node npm
 
-## Code Usage
+## Usage
 
 	// Declare a context with the allowed data
 	context = {
@@ -50,7 +50,7 @@ For now it is a single "funex.js" file, but it should soon be on node npm.
 	var fn(context);
 
 ## Roadmap
-- Support evaluation of async expressions with a standard callback;
+- Support evaluation of async expressions with a standard callback
 - npm installation
 - Test coverage report
 - Detailed syntax documentation
