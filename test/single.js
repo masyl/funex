@@ -10,5 +10,11 @@ var tests = [
 			"Billy-Julia-Billy-Julia"
 		]
 ];
-
+/*
+fixtures = [fixtures];
+fitures.push({
+	name: "bob",
+	age: 30
+});
+*/
 runner(tests, fixtures, 1);
