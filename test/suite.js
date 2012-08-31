@@ -8,6 +8,10 @@ var
 var tests = [
 		["Simple variable access", "lorem", "ipsum"]
 		,["Simple string", "'TEST'", "TEST"]
+		,["Simple string with single quote", "'L''TEST'", "L'TEST"]
+		,["Simple string with single quote at first", "'''LTEST'", "'LTEST"]
+		,["Simple string with single quote at last", "'LTEST'''", "LTEST'"]
+		,["Simple string with multiple single quote at last", "'''L''''TEST'''", "'L''TEST'"]
 		,["Simple numeric integer", "12345", 12345]
 		,["Simple numeric decimal", "2345.234", 2345.234]
 		,["Simple numeric decimal with zero'", "01315.2380", 1315.238]
