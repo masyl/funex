@@ -12,12 +12,17 @@ module.exports = {
 		"Julia"
 	],
 	allKids: function () {
-		return this.kids.join(", ")
+		return this.kids.join(", ");
 	},
 	getKid: function (i) {
-		return this.kids[i]
+		return this.kids[i];
 	},
 	plus3: function (a, b, c) {
 		return a + b + c;
+	},
+	actions: {
+		'didn\'t': "did not",
+		'couldn\'t': "could not",
+		'james\'': "jameses"
 	}
 };
