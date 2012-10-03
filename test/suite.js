@@ -27,6 +27,8 @@ var tests = [
 		,["Simple string with single quote at first", "'''LTEST'", "'LTEST"]
 		,["Simple string with single quote at last", "'LTEST'''", "LTEST'"]
 		,["Simple string with multiple single quote at last", "'''L''''TEST'''", "'L''TEST'"]
+		,["empty string", " ","''"]
+		,["more empty string","      ", "''"]
 		,[
 			"Function call with multiple complex arguments",
 			"join(kidsObj.first, kidsObj.second)",
