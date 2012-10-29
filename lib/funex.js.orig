@@ -28,13 +28,12 @@
 		"'":__string
 	};
 
+<<<<<<< HEAD
 	/**
 	 * Compile a funex string expression into a executable function
 	 * @param exp
 	 */
 	module.exports = function (exp) {
-		//get rid of leading and trailing spaces.
-		exp = exp.trim();
 		var tokens = tokenizer(exp);
 		return function (context) {
 			// If no context was provided, create an empty one.
@@ -46,6 +45,18 @@
 			return executeTokens(tokens, context);
 		};
 	};
+=======
+/**
+ * Compile a funex string expression into a executable function
+ * @param exp
+ */
+module.exports = function (exp) {
+	var tokens = tokenizer(exp);
+	return function(context) {
+		return executeTokens(tokens, context);
+	};
+};
+>>>>>>> Added handling of double apostrophe for strings within expressions
 
 	/**
 	 * Execute the instructions dictated by code tokens
@@ -172,7 +183,11 @@
 		s0 = stack[0];
 		return (s0 === context[0]) ? undefined : s0[0];
 	}
+	s0 = stack[0];
+	return (s0 === context) ? undefined: s0[0];
+}
 
+<<<<<<< HEAD
 	/**
 	 * Parse a funex string into a stack of tokens
 	 * @param exp
@@ -185,10 +200,11 @@
 		var token = "";
 		var state = __default;
 		var tokenIsOneChar;
-
-		//special case for "''"
-		if (exp === "''"){
-			instructions.push(["", __string]);
+		console.log("exp:"+exp);
+		if (exp.trim().length == 0){
+			token = "''";
+			if (token.length)
+				instructions.push([token, __string]);
 			return instructions;
 		}
 
@@ -229,15 +245,19 @@
 					// todo: add other whitespace codes
 					if (chr != " ") newState = __default;
 					break;
-				case __string:
-					// If the last char is a "'""
+				case __string:	
+					// If the last char is a "'"	
 					if (chr == "'") {
-						//if the character is a "'" and is preceeded by a "\\", then we
-						//update the token and keep going (we remove the escaping)
-						if ((token.length > 1 || token === "'") && exp[i-1] === "\\" ) {
-							token = token.substring(0,token.length-1);
-						}
-						// If the last char is a "'" and not the first char
+						//if the character is a "'" and is followed by a second "'", then we skip over it, unless it's the last char
+						//when a string in an expression starts with a double apostrophe, then token length
+						// can be 1, but the token will be "'", so we can test that situation here as well
+						if ((token.length > 1 || token === "'") && exp[i+1] === "'") {
+							//escape the character
+							chr = "\'";
+							//and ignore the next character since it's the extra apostrophe
+							i++;
+						}		
+						// If the last char is a "'" and not the first char		
 						else if (token.length > 1) {
 							token = token.substring(1);
 							chr = "";
@@ -273,10 +293,119 @@
 				token += chr;
 			}
 		}
-		// Push the last token
-		if (token.length){
-			instructions.push([token, state]);
-		}
-		return instructions;
 	}
 })();
+=======
+/**
+ * Parse a funex string into a stack of tokens
+ * @param exp
+ */
+function tokenizer(exp) {
+	var
+		i,
+		chr,
+		instructions = [],
+		newState,
+		token = "",
+		state = __default,
+		// Character maps
+		__charMapNumericStart = "1234567890-",
+		__charMapNumeric = __charMapNumericStart + ".",
+		__charMapAlpha = "abcdefghijklmnopqrstuvwxyz",
+		__charMapAlphaExtended = __charMapAlpha + __charMapAlpha.toUpperCase() + "_$",
+		__charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericStart;
+
+	var stateChars = {
+		"(": __callOpen,
+		")": __callClose,
+		"[": __arrayOpen,
+		"]": __arrayClose,
+		".": __dot,
+		",": __argsSeparator,
+		" ": __whitespace,
+		"'": __string
+	};
+
+	for (i = 0; i < exp.length; i++) {
+		chr = exp[i];
+		newState = undefined;
+		switch(state) {
+			case __default:
+				newState = stateChars[chr];
+				if (newState !== undefined) break;
+				if (__charMapNumericStart.indexOf(chr) + 1) {
+					newState = __numeric;
+					break;
+				}
+				if (__charMapAlphaExtended.indexOf(chr) + 1)
+					newState = __name;
+				break;
+			case  __callOpen:
+				if (chr != "(" || token.length == 1) newState = __default;
+				break;
+			case __callClose:
+				if (chr != ")" || token.length == 1) newState = __default;
+				break;
+			case __arrayOpen:
+				if (chr != "[" || token.length == 1) newState = __default;
+				break;
+			case __arrayClose:
+				if (chr != "]" || token.length == 1) newState = __default;
+				break;
+			case __dot:
+				if (chr != "." || token.length == 1) newState = __default;
+				break;
+			case __argsSeparator:
+				if (chr != "," || token.length == 1) newState = __default;
+				break;
+			case __whitespace:
+				// todo: add other whitespace codes
+				if (chr != " ") newState = __default;
+				break;
+			case __string:
+				// If the last char is a "'" and not the first char
+				if (chr == "'" && token.length > 1 && ((i+1 < exp.length) ? exp[i+1] == "'" : false)) {
+					i++;
+				}
+				else if (chr == "'" && token.length > 1) {
+					// TODO: CODE NEVER GETS HERE!?!?!?!
+					token = token.substring(1);
+					chr = "";
+					newState = __default;
+				}
+				break;
+			case __numeric:
+				if (__charMapNumeric.indexOf(chr) < 0)
+					newState = __default;
+				break;
+			case __name:
+				if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
+					newState = __default;
+		}
+
+		// If state changed, set the new state push the token on the
+		// stack of tokens and start a new token
+		if (newState) {
+			// If the current token is not empty,
+			// push it in the instruction stack
+			if (token.length)
+				instructions.push([token, state]);
+			// Get the new state returned by the state handler
+			state = newState;
+			// Flush the token
+			token = "";
+			// Unless the current character has been flushed (like for quotes
+			// around strings, set back the index for the next iteration
+			if (chr !== "") i--;
+		} else {
+			// Push the parsing result of that char on the token
+			token += chr;
+		}
+	}
+	
+	// Push the last token
+	if (token.length)
+		instructions.push([token, state]);
+	return instructions;
+}
+>>>>>>> Added handling of double apostrophe for strings within expressions
