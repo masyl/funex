@@ -1,6 +1,6 @@
 {
   "name": "funex",
-  "description": "API for evaluation functional expressions",
+  "description": "Module for evaluating functional expressions",
   "version": "0.2",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
@@ -24,19 +24,25 @@
     "email": "mathieu@ti-coco.com",
     "url": "https://github.com/masyl"
   },
+  "contributors": [
+	  "Alex-Seville <hi@alexanderseville.com>"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/alex-seville/blanket/blob/master/LICENSE-MIT"
+    }
+  ],
   "main": "lib/funex.js",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/suite.js",
-    "blanket": {
-      "pattern": "test"
-    }
+    "test": "mocha test/suite.js"
   },
   "engines": {
-    "node": ">= v0.6.0"
+    "node": ">= v0.8.0"
   },
   "devDependencies": {
     "mocha": "1.x",
