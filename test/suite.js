@@ -1,8 +1,11 @@
-var
-		cycles = 1,
-		evalComparison = false,
-		fixtures = require("./fixtures");
-		runner = require("./runner");
+var cycles = 1;
+var evalComparison = false;
+// Fixture for single object as the execution context
+// var fixtures = require("./fixtures");
+
+// Fixture for using an array of objects as the execution context (behaves life memory frames)
+var fixtures = require("./fixtures-stack");
+var runner = require("./runner");
 
 // test name, expression, expected
 var tests = [

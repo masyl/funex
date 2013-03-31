@@ -7,11 +7,12 @@ Example usage:
 	result = funex("members[id].name.fullname()", model);
 
 ## Features
-- Expressions are evaluated and executed in a controled and secure scope
-- Minified source is under 2k (under 1k gzipped)
-- Function calls, dot notation, array/object members, strings, numbers
+- Expressions are evaluated and executed in a controlled and secure scope
+- Minified source is around 2k
+- Supports function calls, dot notation, array/object members, strings, numbers
+- Use array of objects to simulate closures.
 - The syntax is a familiar subset of javascript
-- Simple because it is logic-less: no operators, statements or boolean logic
+- Simple because it is logic-less: no operators, statements or boolean logic.
 - Throws readable syntax errors
 - Runs both in browser and on the server
 - No complex api or configuration, a single function to use
@@ -38,16 +39,35 @@ For now it is a single "funex.js" file, but it should soon be on node npm
 		dogs : {
 			names: ["fido", "ricky"],
 		}
-		join: function (a, b) {
-
-		}
+		join: function (a, b) { return a+"-"+b }
 	}
 
 	// Compile the expression into a function
-	fn = funex("join(dogs.names[0], '-', dogs.name[1])");
+	fn = funex("join(dogs.names[0], dogs.name[1])");
 
 	// Call the function with a context
-	var fn(context);
+	var value = fn(context);
+
+## Usage with closures
+
+	// Declare the context with an array of objects with item 0 being the top most frame
+	context = [
+		{
+			dogs : {
+				names: ["fido", "ricky"],
+			}
+		},
+		{
+			join: function (a, b) { return a+"-"+b }
+		}
+	]
+
+	// Compile the expression into a function
+	fn = funex("join(dogs.names[0], dogs.name[1])");
+
+	// Call the function with a context
+	var value = fn(context);
+
 
 ## Roadmap
 - Support evaluation of async expressions with a standard callback
