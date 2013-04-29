@@ -70,7 +70,16 @@ For now it is a single "funex.js" file, but it should soon be on node npm
 
 
 ## Roadmap
+- DONE - Whitespace support
+- DONE - Support for Multi-statement
+- Functions as arguments instead of strings
+- Syntax error on unclosed function calls and array gets
+- Syntax error on miss-use of ";"
+- Syntax error on miss-placed string test."string"
+- Syntax error on unterminated statement
 - Support evaluation of async expressions with a standard callback
+- Annotated code
+- Strict mode
 - npm installation
 - Test coverage report
 - Detailed syntax documentation

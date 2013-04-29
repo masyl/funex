@@ -18,6 +18,7 @@ var tests = [
 		["Dot notation", "kidsObj.first", "Billy"],
 		["Dot notation with whitespace", "  kidsObj.first  ", "Billy"],
 		["Dot notation with whitespace around the dot", "  kidsObj  .  first  ", "Billy"],
+		["Multiline and tabs", "  \n\tkidsObj\n\t\t.first\t\n  ", "Billy"],
 		["Function call with no argument", "allKids()", "Billy, Julia"],
 		["Function call with a multiple argument", "getKid(1)", "Julia"],
 		["Array call with number", "kids[0]", "Billy"],
@@ -31,6 +32,9 @@ var tests = [
 		["Simple string with single quote at last", "'LTEST\\''", "LTEST'"],
 		["Simple string with multiple single quote at last", "'\\'L\\'\\'TEST\\''", "'L''TEST'"],
 		["empty string", "''",""],
+		["Multiple statements", "'abcd'; plus3(1, 2, 3);", 6],
+		["Multiple statements with trailing semicolons", "'abcd'; plus3(1, 2, 3);;; ", 6],
+		["Multiple statements in multiline", "'abcd';\n\tplus3(1, 2, 3);\n\tkidsObj['second'];", "Julia"],
 		["more empty string", "   ''    ",""],
 		[
 			"Function call with multiple complex arguments",
