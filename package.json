@@ -39,7 +39,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/suite.js"
+    "test": "mocha"
   },
   "engines": {
     "node": ">= v0.8.0"
