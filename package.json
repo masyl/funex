@@ -41,7 +41,7 @@
   "scripts": {
     "test": "grunt travis --verbose",
     "blanket": {
-      "pattern": "/test/suite.js"
+      "pattern": ["test/suite.js"]
     },
     "travis-cov": {
       "threshold": 70

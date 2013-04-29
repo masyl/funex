@@ -54,6 +54,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['uglify', 'plato', 'jshint', 'mochacov']);
-  grunt.registerTask('travis', ['mochacov']);
+  grunt.registerTask('travis', ['mochacov:coverage']);
+  grunt.registerTask('test', ['mochacov:test']);
 
 };
