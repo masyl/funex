@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/masyl/funex.png)](https://travis-ci.org/masyl/funex)
+[![Coverage Status](https://coveralls.io/repos/masyl/funex/badge.png?branch=master)](https://coveralls.io/r/masyl/funex)
 
 # Funex
 

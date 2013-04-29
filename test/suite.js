@@ -1,3 +1,4 @@
+
 var cycles = 1;
 var evalComparison = false;
 // Fixture for single object as the execution context
