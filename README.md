@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/masyl/funex.png)](https://travis-ci.org/masyl/funex.png)
+[![Build Status](https://travis-ci.org/masyl/funex.png)](https://travis-ci.org/masyl/funex)
 
 # Funex
 
