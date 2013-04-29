@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.org/masyl/funex.png)](https://travis-ci.org/masyl/funex.png)
+
 # Funex
 
 Javascript utility for secure evaluation of functional expressions.
