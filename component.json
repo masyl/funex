@@ -1,10 +1,12 @@
 {
   "name": "funex",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "./lib/funex.js",
   "ignore": [
     "**/.*",
     "node_modules",
-    "components"
+    "components",
+    "test",
+    "doc"
   ]
 }

@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">45.78</p>
+      <p class="stat">56.69</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">342</p>
+      <p class="stat">366</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">81.89</p>
+      <p class="stat">92.11</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.76</p>
+      <p class="stat">3.20</p>
     </div>
   </div>
 </div>
@@ -322,6 +322,75 @@
 		return (statementOutputs.length) ? statementOutputs[0] : undef;
 	}
 
+
+	// Define all token handlers
+
+	var tokenHandlers = {};
+
+	tokenHandlers[__default] = function (chr) {
+		var newState = stateChars[chr];
+		if (newState !== undef) return [newState];
+		if (__charMapNumericStart.indexOf(chr) + 1) {
+			newState = __numeric;
+		} else if (__charMapAlphaExtended.indexOf(chr) + 1) {
+			newState = __name;
+		}
+		return [newState];
+	};
+
+	tokenHandlers[__callOpen] = function (chr, token) {
+		if (chr != "(" || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__callClose] = function (chr, token) {
+		if (chr != ")" || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__arrayOpen] = function (chr, token) {
+		if (chr != "[" || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__arrayClose] = function (chr, token) {
+		if (chr != "]" || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__statementSeparator] = function (chr, token) {
+		if (chr != ";" || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__dot] = function (chr, token) {
+		if (chr != "." || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__argsSeparator] = function (chr, token) {
+		if (chr != "," || (token.length == 1)) return [__default];
+	};
+	tokenHandlers[__whitespace] = function (chr, token) {
+		// todo: add other whitespace codes
+		if (__charMapWhiteSpace.indexOf(chr) < 0) return [__default];
+	};
+	tokenHandlers[__string] = function (chr, token, exp, i) {
+		var _chr = chr;
+		var _token = token;
+		// If the last char is a "'""
+		if (chr == "'") {
+			//if the character is a "'" and is preceeded by a "\\", then we
+			//update the token and keep going (we remove the escaping)
+			if ((token.length > 1 || token === "'") && exp[i-1] === "\\" ) {
+				_token = token.substring(0, token.length-1);
+				return [undef, _chr, _token];
+			}
+			// If the last char is a "'" and not the first char
+			else if (token.length > 1) {
+				_token = token.substring(1);
+				_chr = "";
+				return [__default, _chr, _token];
+			}
+		}
+	};
+	tokenHandlers[__numeric] = function (chr) {
+		if (__charMapNumeric.indexOf(chr) < 0)
+			return [__default];
+	};
+	tokenHandlers[__name] = function (chr) {
+		if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
+			return [__default];
+	};
+
 	/**
 	 * Parse a funex string into a stack of tokens
 	 * @param exp
@@ -333,9 +402,11 @@
 		var newState;
 		var token = "";
 		var state = __default;
-		var tokenIsOneChar;
+		var tokenHandler;
+		var tokenHandlerResult;
 
-		//special case for "''"
+		// special case for empty string made of consecutive single quoted : "''"
+		// todo: figure out how to handle this without an special code path
 		if (exp === "''"){
 			instructions.push(["", __string]);
 			return instructions;
@@ -344,66 +415,19 @@
 		for (i = 0; i < exp.length; i++) {
 			chr = exp[i];
 			newState = undef;
-			tokenIsOneChar = (token.length == 1);
-			switch (state) {
-				case __default:
-					newState = stateChars[chr];
-					if (newState !== undef) break;
-					if (__charMapNumericStart.indexOf(chr) + 1) {
-						newState = __numeric;
-						break;
+			tokenHandler = tokenHandlers[state];
+			tokenHandlerResult = tokenHandler(chr, token, exp, i);
+			// return [state, chr, token];
+
+			// Handle the return value for the token Handler
+			if (tokenHandlerResult && tokenHandlerResult.length > 0) {
+				newState = tokenHandlerResult[0];
+				if (tokenHandlerResult.length > 1) {
+					chr = tokenHandlerResult[1];
+					if (tokenHandlerResult.length > 2) {
+						token = tokenHandlerResult[2];
 					}
-					if (__charMapAlphaExtended.indexOf(chr) + 1)
-						newState = __name;
-					break;
-				case  __callOpen:
-					if (chr != "(" || tokenIsOneChar) newState = __default;
-					break;
-				case __callClose:
-					if (chr != ")" || tokenIsOneChar) newState = __default;
-					break;
-				case __arrayOpen:
-					if (chr != "[" || tokenIsOneChar) newState = __default;
-					break;
-				case __arrayClose:
-					if (chr != "]" || tokenIsOneChar) newState = __default;
-					break;
-				case __statementSeparator:
-					if (chr != ";" || tokenIsOneChar) newState = __default;
-					break;
-				case __dot:
-					if (chr != "." || tokenIsOneChar) newState = __default;
-					break;
-				case __argsSeparator:
-					if (chr != "," || tokenIsOneChar) newState = __default;
-					break;
-				case __whitespace:
-					// todo: add other whitespace codes
-					if (__charMapWhiteSpace.indexOf(chr) < 0) newState = __default;
-					break;
-				case __string:
-					// If the last char is a "'""
-					if (chr == "'") {
-						//if the character is a "'" and is preceeded by a "\\", then we
-						//update the token and keep going (we remove the escaping)
-						if ((token.length > 1 || token === "'") && exp[i-1] === "\\" ) {
-							token = token.substring(0,token.length-1);
-						}
-						// If the last char is a "'" and not the first char
-						else if (token.length > 1) {
-							token = token.substring(1);
-							chr = "";
-							newState = __default;
-						}
-					}
-					break;
-				case __numeric:
-					if (__charMapNumeric.indexOf(chr) < 0)
-						newState = __default;
-					break;
-				case __name:
-					if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
-						newState = __default;
+				}
 			}
 
 			// If state changed, set the new state push the token on the

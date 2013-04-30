@@ -33,9 +33,13 @@ compromising security
 - To allow secure macros in extendable apps
 - For computable values in configurable apps
 
-## Installation
+## Installation on Node.js
 
-For now it is a single "funex.js" file, but it should soon be on node npm
+	npm install --save funex
+
+## Installation with Bower
+
+	bower install funex
 
 ## Usage
 
@@ -77,15 +81,16 @@ For now it is a single "funex.js" file, but it should soon be on node npm
 ## Roadmap
 - DONE - Whitespace support
 - DONE - Support for Multi-statement
-- Functions as arguments instead of strings
+- Support evaluation of async expressions with a standard callback
 - Syntax error on unclosed function calls and array gets
 - Syntax error on miss-use of ";"
 - Syntax error on miss-placed string test."string"
 - Syntax error on unterminated statement
-- Support evaluation of async expressions with a standard callback
+- A tool to test funex live
 - Annotated code
-- Strict mode
-- npm installation
+- DONE: Strict mode
+- Lower cyclomatic complexity
 - Test coverage report
 - Detailed syntax documentation
 - A pretty web-site
+- A new logo
