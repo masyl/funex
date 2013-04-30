@@ -26,7 +26,7 @@ module.exports = function(grunt) {
 	    options: {
         }
 	},
-	  mochacov: {
+	mochacov: {
 	    coverage: {
 	      options: {
 	        coveralls: {
@@ -41,6 +41,8 @@ module.exports = function(grunt) {
 	      }
 	    },
 	    options: {
+	    //   reporter: 'html-cov',
+	    //   require: ['should'],
 	      files: 'test/suite.js'
 	    }
 	  }

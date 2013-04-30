@@ -39,7 +39,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "grunt travis --verbose",
+    "test": "grunt test --verbose",
     "blanket": {
       "pattern": ["test/suite.js"]
     },
