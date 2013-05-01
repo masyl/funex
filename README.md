@@ -81,6 +81,12 @@ compromising security
 ## Roadmap
 - DONE - Whitespace support
 - DONE - Support for Multi-statement
+- DONE: Strict mode
+- Measure impact of uncompressible member names on gZipped version of the library
+- Fix ie9 support
+- Lower cyclomatic complexity : all functions under 5
+- Measure impact of uncompressible member names on gZipped version of the library
+- Refactoring: tokenHandler should manipulate a cursor object instead of multiple argument and return values
 - Support evaluation of async expressions with a standard callback
 - Syntax error on unclosed function calls and array gets
 - Syntax error on miss-use of ";"
@@ -88,8 +94,6 @@ compromising security
 - Syntax error on unterminated statement
 - A tool to test funex live
 - Annotated code
-- DONE: Strict mode
-- Lower cyclomatic complexity
 - Test coverage report
 - Detailed syntax documentation
 - A pretty web-site

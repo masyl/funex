@@ -45,7 +45,22 @@ module.exports = function(grunt) {
 	    //   require: ['should'],
 	      files: 'test/suite.js'
 	    }
-	  }
+	  },
+	  release: {
+	    options: {
+	      bump: true,
+	      file: 'package.json',
+	      add: true,
+	      commit: true,
+	      tag: true,
+	      push: true,
+	      pushTags: true,
+	      npm: true,
+	      tagName: '<%= version %>',
+	      commitMessage: 'Version bump to <%= version %>',
+	      tagMessage: 'Version <%= version %>'
+	    }
+  }
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -53,9 +68,21 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-plato');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-mocha-cov');
+  grunt.loadNpmTasks('grunt-release');
+
+  grunt.registerTask('gzip', 'blah blh blah', function () {
+    var done = this.async();
+    require('child_process').exec('gzip -c -9 build/funex.min.js > build/funex.min.js.gz', function (err, stdout) {
+      grunt.log.write(stdout);
+      done(err);
+    });  
+  });
 
   // Default task(s).
-  grunt.registerTask('default', ['uglify', 'plato', 'jshint', 'mochacov']);
+  grunt.registerTask('default', ['plato', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
+
+
+
   // grunt.registerTask('travis', ['mochacov:coverage']);
   // grunt.registerTask('test', ['mochacov:test']);
 

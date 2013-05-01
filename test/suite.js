@@ -92,4 +92,7 @@ var tests = [
 		]
 ];
 
+console.time();
 runner(tests, fixtures, cycles, evalComparison);
+console.timeEnd();
+

@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">56.69</p>
+      <p class="stat">56.76</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">366</p>
+      <p class="stat">446</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">92.11</p>
+      <p class="stat">90.26</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">3.20</p>
+      <p class="stat">3.13</p>
     </div>
   </div>
 </div>
@@ -94,18 +94,21 @@
 	"use strict";
 	var undef = void 0;
 	// Declare constants for state names
-	var __default = 99;
-	var __callOpen = 3;
-	var __callClose = 4;
-	var __arrayOpen = 5;
-	var __arrayClose = 6;
-	var __dot = 7;
-	var __argsSeparator = 8;
-	var __whitespace = 9;
-	var __string = 10;
-	var __numeric = 11;
-	var __name = 12;
-	var __statementSeparator = 13;
+	//
+	var __default = "default";
+	var __callOpen = "callOpen";
+	var __callClose = "callClose";
+	var __arrayOpen = "arrayOpen";
+	var __arrayClose = "arrayClose";
+	var __dot = "dot";
+	var __argsSeparator = "argsSeparator";
+	var __whitespace = "whitespace";
+	var __string = "string";
+	var __numeric = "numeric";
+	var __name = "name";
+	var __statementSeparator = "statementSeparator";
+
+
 	var __charMapNumericStart = "1234567890-";
 	var __charMapWhiteSpace = " \n\t";
 	var __charMapNumeric = __charMapNumericStart + ".";
@@ -132,26 +135,29 @@
 	 * that can simulate a stack of memory frames
 	 * @param framesArray An array of objects to be used as memory frames
 	 */
-	function recursiveMemoryFrameFactory(framesArray) {
+	function memoryStackFactory(framesArray) {
 		// Ensure that the provided array will not be muted during
 		// the recursions
-		function _recursiveMemoryFrameFactory(framesArray) {
-			function Frame(obj) {
-				for (var key in obj) {
-					if (obj.hasOwnProperty(key)) {
-						this[key] = obj[key];
-					}
-				}
-			}
-			var referenceObj = framesArray.shift();
-			if (framesArray.length > 0) {
-				Frame.prototype = _recursiveMemoryFrameFactory(framesArray);
-			}
-			var frame = new Frame(referenceObj);
-			return frame;
-		}
-		return _recursiveMemoryFrameFactory(framesArray.slice(0));
+		return memoryStackFactoryIterator(framesArray.slice(0));
 	}
+	function memoryStackFactoryIterator(framesArray) {
+		var referenceObj = framesArray.shift();
+		if (framesArray.length > 0) {
+			// *** Special note: Event if the prototype keeps being reassigned, the object
+			// that has been created from it will remember the construction work
+			// that the original prototype did
+			MemoryStackFactoryFrame.prototype = memoryStackFactoryIterator(framesArray);
+		}
+		return new MemoryStackFactoryFrame(referenceObj);
+	}
+	function MemoryStackFactoryFrame(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				this[key] = obj[key];
+			}
+		}
+	}
+
 
 
 	/**
@@ -171,7 +177,7 @@
 			if (context.constructor.name !== "Array") context = [context];
 
 			// var frames = context;
-			var frames = [recursiveMemoryFrameFactory(context)];
+			var frames = [memoryStackFactory(context)];
 
 			return executeTokens(tokens, frames);
 		};
@@ -322,7 +328,7 @@
 		return (statementOutputs.length) ? statementOutputs[0] : undef;
 	}
 
-
+/*
 	// Define all token handlers
 
 	var tokenHandlers = {};
@@ -390,6 +396,80 @@
 		if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
 			return [__default];
 	};
+
+*/
+
+
+
+	// Define all token handlers
+
+	var tokenHandlers = {
+		"default": function (chr) {
+			var newState = stateChars[chr];
+			if (newState !== undef) return [newState];
+			if (__charMapNumericStart.indexOf(chr) + 1) {
+				newState = __numeric;
+			} else if (__charMapAlphaExtended.indexOf(chr) + 1) {
+				newState = __name;
+			}
+			return [newState];
+		},
+		"callOpen": function (chr, token) {
+			if (chr != "(" || (token.length == 1)) return [__default];
+		},
+		"callClose": function (chr, token) {
+			if (chr != ")" || (token.length == 1)) return [__default];
+		},
+		"arrayOpen": function (chr, token) {
+			if (chr != "[" || (token.length == 1)) return [__default];
+		},
+		"arrayClose": function (chr, token) {
+			if (chr != "]" || (token.length == 1)) return [__default];
+		},
+		"statementSeparator": function (chr, token) {
+			if (chr != ";" || (token.length == 1)) return [__default];
+		},
+		"dot": function (chr, token) {
+			if (chr != "." || (token.length == 1)) return [__default];
+		},
+		"argsSeparator": function (chr, token) {
+			if (chr != "," || (token.length == 1)) return [__default];
+		},
+		"whitespace": function (chr, token) {
+			// todo: add other whitespace codes
+			if (__charMapWhiteSpace.indexOf(chr) < 0) return [__default];
+		},
+		"string": function (chr, token, exp, i) {
+			var _chr = chr;
+			var _token = token;
+			// If the last char is a "'""
+			if (chr == "'") {
+				//if the character is a "'" and is preceeded by a "\\", then we
+				//update the token and keep going (we remove the escaping)
+				if ((token.length > 1 || token === "'") && exp[i-1] === "\\" ) {
+					_token = token.substring(0, token.length-1);
+					return [undef, _chr, _token];
+				}
+				// If the last char is a "'" and not the first char
+				else if (token.length > 1) {
+					_token = token.substring(1);
+					_chr = "";
+					return [__default, _chr, _token];
+				}
+			}
+		},
+		"numeric": function (chr) {
+			if (__charMapNumeric.indexOf(chr) < 0)
+				return [__default];
+		},
+		"name" : function (chr) {
+			if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
+				return [__default];
+		}
+	};
+
+
+
 
 	/**
 	 * Parse a funex string into a stack of tokens
