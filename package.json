@@ -34,28 +34,21 @@
     }
   ],
   "main": "lib/funex.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  },
   "scripts": {
     "test": "grunt test --verbose",
     "blanket": {
       "pattern": [
-        "test/suite.js"
+        "suite.js"
       ]
-    },
-    "travis-cov": {
-      "threshold": 70
     }
   },
   "engines": {
     "node": ">= v0.8.0"
   },
   "devDependencies": {
-    "mocha": "1.x",
-    "should": "0.x",
+    "grunt-cli": "~0.1.7",
     "grunt": "~0.4.1",
+    "should": "0.x",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-plato": "~0.2.0",
     "grunt-contrib-jshint": "~0.4.3",
