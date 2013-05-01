@@ -2,7 +2,6 @@ var
 		evalCompare = false,
 		result,
 		funex = require("../lib/funex"),
-		mocha = require("mocha"),
 		should = require("should"),
 		assert = require("assert");
 

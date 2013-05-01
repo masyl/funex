@@ -35,7 +35,7 @@
   ],
   "main": "lib/funex.js",
   "scripts": {
-    "test": "grunt test --verbose",
+    "test": "grunt test",
     "blanket": {
       "pattern": [
         "suite.js"
@@ -52,9 +52,8 @@
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-plato": "~0.2.0",
     "grunt-contrib-jshint": "~0.4.3",
-    "grunt-mocha-cov": "0.0.4",
     "grunt-release": "~0.3.3",
-    "blanket": "~1.1.3"
+    "grunt-mocha-cov": "0.0.4"
   },
   "dependencies": {}
 }
