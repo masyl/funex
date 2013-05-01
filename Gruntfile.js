@@ -70,7 +70,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-cov');
   grunt.loadNpmTasks('grunt-release');
 
-  grunt.registerTask('gzip', 'blah blh blah', function () {
+  grunt.registerTask('gzip', 'blah blah blah', function () {
     var done = this.async();
     require('child_process').exec('gzip -c -9 build/funex.min.js > build/funex.min.js.gz', function (err, stdout) {
       grunt.log.write(stdout);
@@ -80,10 +80,10 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['plato', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
-
-
-
   // grunt.registerTask('travis', ['mochacov:coverage']);
-  // grunt.registerTask('test', ['mochacov:test']);
+  grunt.registerTask('test', ['mochacov']);
+
+
+
 
 };

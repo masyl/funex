@@ -39,8 +39,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha",
-    "test-grunt": "grunt test --verbose",
+    "test-old": "mocha",
+    "test": "grunt test --verbose",
     "blanket": {
       "pattern": [
         "test/suite.js"

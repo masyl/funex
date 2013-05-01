@@ -79,10 +79,10 @@ compromising security
 
 
 ## Roadmap
-- DONE - Whitespace support
-- DONE - Support for Multi-statement
-- DONE: Strict mode
-- Support for inline JSON 
+- Document : Whitespace support
+- Document : Support for Multi-statement
+- Document : Code Quality and Hygiene
+- Document : Support for inline JSON 
 - Support for double quoted strings
 - Support for literal object notation (needed?)
 - Measure impact of uncompressible member names on gZipped version of the library
@@ -100,7 +100,7 @@ compromising security
 - Test syntax errors on bad json
 - A tool to test funex live
 - Annotated code
-- Test coverage report
+- Test coverage report or integration with coveralls.io
 - Detailed syntax documentation
 - A pretty web-site
 - A new logo
