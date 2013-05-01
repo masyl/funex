@@ -29,22 +29,18 @@ module.exports = function(grunt) {
 	mochacov: {
 	    coverage: {
 	      options: {
-	        files: 'test/suite.js',
 	        coveralls: {
-	          serviceName: 'travis-pro',
-	          repoToken: '3EeXcBem9hMgrM0oG3Gja3xNu2AA9Sj8j'
+	          serviceName: 'travis-pro'
 	        },
 	      }
 	    },
 	    test: {
-	      options: {
-	        files: 'test/suite.js',
-	        reporter: 'dot'
-	      }
+	      // options: {
+	      //   files: 'test/suite.js',
+	      //   reporter: 'dot'
+	      // }
 	    },
 	    options: {
-	    //   reporter: 'html-cov',
-	    //   require: ['should'],
 	      files: 'test/suite.js'
 	    }
 	  },
@@ -82,7 +78,8 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['plato', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
-  grunt.registerTask('test', ['mochacov:coverage']);
+  grunt.registerTask('travis', ['mochacov:coverage']);
+  grunt.registerTask('test', ['mochacov:test']);
   // grunt.registerTask('test', ['grunt-mocha-cov']);
 
 
