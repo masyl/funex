@@ -5,6 +5,13 @@ module.exports = [
 		},
 		allKids: function () {
 			return this.kids.join(", ");
+		},
+		keys: function (obj) {
+			var arr = [];
+			for (key in obj) {
+				arr.push(key);
+			}
+			return arr.join();
 		}
 	},
 	{

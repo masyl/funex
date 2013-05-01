@@ -36,6 +36,7 @@ var tests = [
 		["Multiple statements", "'abcd'; plus3(1, 2, 3);", 6],
 		["Multiple statements with trailing semicolons", "'abcd'; plus3(1, 2, 3);;; ", 6],
 		["Multiple statements in multiline", "'abcd';\n\tplus3(1, 2, 3);\n\tkidsObj['second'];", "Julia"],
+		["Inline JSON notation", 'keys({"a":1, "b":2, "c":3, "d": {"abc": 999}})', "a,b,c,d"],
 		["more empty string", "   ''    ",""],
 		[
 			"Function call with multiple complex arguments",
@@ -63,11 +64,6 @@ var tests = [
 			"Exception when expression contains one closing parens too many",
 			"join('a', 'b'))",
 			"Syntax error : Illegal call : join(a, b))",
-			{isException: true}
-		], [
-			"Exception when trying to use literal object notation",
-			"join({a:3}, 'b'))",
-			"Syntax error : join({",
 			{isException: true}
 		], [
 			"Exception when trying to use arythmetic operations",

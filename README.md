@@ -82,7 +82,12 @@ compromising security
 - DONE - Whitespace support
 - DONE - Support for Multi-statement
 - DONE: Strict mode
+- Support for inline JSON 
+- Support for double quoted strings
+- Support for literal object notation (needed?)
 - Measure impact of uncompressible member names on gZipped version of the library
+- Re-avaluate the need for the test runner
+- Automate test suite on the frontend in all browsers (testling or testling)
 - Fix ie9 support
 - Lower cyclomatic complexity : all functions under 5
 - Measure impact of uncompressible member names on gZipped version of the library
@@ -92,6 +97,7 @@ compromising security
 - Syntax error on miss-use of ";"
 - Syntax error on miss-placed string test."string"
 - Syntax error on unterminated statement
+- Test syntax errors on bad json
 - A tool to test funex live
 - Annotated code
 - Test coverage report
