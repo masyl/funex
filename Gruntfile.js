@@ -29,6 +29,7 @@ module.exports = function(grunt) {
 	mochacov: {
 	    coverage: {
 	      options: {
+	        files: 'test/suite.js',
 	        coveralls: {
 	          serviceName: 'travis-pro',
 	          repoToken: '3EeXcBem9hMgrM0oG3Gja3xNu2AA9Sj8j'
@@ -37,6 +38,7 @@ module.exports = function(grunt) {
 	    },
 	    test: {
 	      options: {
+	        files: 'test/suite.js',
 	        reporter: 'dot'
 	      }
 	    },
