@@ -89,6 +89,6 @@ var tests = [
 		]
 ];
 
-runner(tests, fixtures, cycles, evalComparison);
+runner(funex, tests, fixtures, cycles, evalComparison);
 
 

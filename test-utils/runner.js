@@ -1,11 +1,10 @@
 var
 		evalCompare = false,
 		result,
-		funex = require("../lib/funex"),
 		should = require("should"),
 		assert = require("assert");
 
-module.exports = function (tests, fixtures, cycles, evalComparison) {
+module.exports = function (funex, tests, fixtures, cycles, evalComparison) {
 	describe("With a series of tests and fixtures, repeated " + cycles + " times", function () {
 		var
 				i,
