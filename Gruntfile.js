@@ -29,7 +29,6 @@ module.exports = function(grunt) {
 	    test: {},
 	    coverage: {
 	      options: {
-			files: 'test/suite.js',
 	        coveralls: {
 	          serviceName: 'travis-ci'
 	        },
@@ -38,7 +37,7 @@ module.exports = function(grunt) {
 	    options: {
 			reporter: 'spec',
 			ignoreLeaks: false,
-			files: 'test/suite.js'
+			files: 'test/*.js'
 	    }
 	  },
 	  release: {
