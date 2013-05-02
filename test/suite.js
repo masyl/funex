@@ -70,7 +70,7 @@ var tests = [
 		], [
 			"Exception thrown when calling a property on undefined with brackets",
 			"someBogusVar['someUndefinedValue']",
-			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar.someUndefinedValue",
+			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar['someUndefinedValue']",
 			{isException: true}
 		], [
 			"Exception thrown when closing a brace before openning one",
@@ -80,7 +80,7 @@ var tests = [
 		], [
 			"Exception when expression contains one closing parens too many",
 			"join('a', 'b'))",
-			"Syntax error : Illegal call : join(a, b))",
+			"Syntax error : Illegal call : join('a', 'b'))",
 			{isException: true}
 		], [
 			"Exception when trying to use arythmetic operations",
