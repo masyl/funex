@@ -12,8 +12,8 @@ Example usage:
 	result = funex("members[id].name.fullname()", model);
 
 ## Features
-- Expressions are evaluated and executed in a controlled and secure scope
-- Minified source is around 2k
+- Secure: Expressions are evaluated and executed in a controlled and secure scope
+- Small : Minified + Gzipped source is around 1.6k
 - Supports function calls, dot notation, array/object members, strings, numbers
 - Use array of objects to simulate closures.
 - The syntax is a familiar subset of javascript
@@ -83,7 +83,6 @@ compromising security
 - Document : Support for Multi-statement
 - Document : Code Quality and Hygiene
 - Document : Support for inline JSON 
-- Support for double quoted strings
 - Support for literal object notation (needed?)
 - Measure impact of uncompressible member names on gZipped version of the library
 - Re-avaluate the need for the test runner
