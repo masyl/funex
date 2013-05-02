@@ -24,6 +24,9 @@ module.exports = [
 			'didn\'t': "did not",
 			'couldn\'t': "could not",
 			'james\'': "jameses"
+		},
+		uppercase: function (str) {
+			return str.toUpperCase();
 		}
 	},
 	{

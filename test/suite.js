@@ -27,6 +27,7 @@ var tests = [
 		["Array call with number", "kids[0]", "Billy"],
 		["Array call with string", "kidsObj['second']", "Julia"],
 		["Function call with multiple arguments", "plus3(1, 2, 3)", 6],
+
 		["Collapse double-single quote", "'TES\\'T'", "TES'T"],
 		["collpase double-single quote in object", "  actions['didn\\'t']  ", "did not"],
 		["collpase double-single quote in object at end", "  actions['james\\'']  ", "jameses"],
@@ -35,6 +36,18 @@ var tests = [
 		["Simple string with single quote at last", "'LTEST\\''", "LTEST'"],
 		["Simple string with multiple single quote at last", "'\\'L\\'\\'TEST\\''", "'L''TEST'"],
 		["empty string", "''",""],
+
+
+		["Collapse double-double quote", '"TES\\"T"', 'TES"T'],
+		["collpase double-double quote in object", '  uppercase("didn\\"t")  ', "DIDN\"T"],
+		["collpase double-double quote in object at end", '  uppercase("james\\"")  ', "JAMES\""],
+		["Simple string with double quote", '"L\\"TEST"', 'L"TEST'],
+		["Simple string with double quote at first", '"\\"LTEST"', '"LTEST'],
+		["Simple string with double quote at last", '"LTEST\\""', 'LTEST"'],
+		["Simple string with multiple double quote at last", '"\\"L\\"\\"TEST\\""', '"L""TEST"'],
+		["empty double quote string", '""',""],
+
+
 		["Multiple statements", "'abcd'; plus3(1, 2, 3);", 6],
 		["Multiple statements with trailing semicolons", "'abcd'; plus3(1, 2, 3);;; ", 6],
 		["Multiple statements in multiline", "'abcd';\n\tplus3(1, 2, 3);\n\tkidsObj['second'];", "Julia"],
