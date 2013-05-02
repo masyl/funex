@@ -22,6 +22,7 @@ var tests = [
 		["Dot notation with whitespace around the dot", "  kidsObj  .  first  ", "Billy"],
 		["Multiline and tabs", "  \n\tkidsObj\n\t\t.first\t\n  ", "Billy"],
 		["Function call with no argument", "allKids()", "Billy, Julia"],
+		["Function call with first empty argument", "allKids(,5)", "Billy, Julia"], // Force code coverage
 		["Function call with a multiple argument", "getKid(1)", "Julia"],
 		["Array call with number", "kids[0]", "Billy"],
 		["Array call with string", "kidsObj['second']", "Julia"],
@@ -60,6 +61,16 @@ var tests = [
 			"Exception thrown when using function call parens on undefined",
 			"someBogusVar()",
 			"Type error: undefined is not a function : someBogusVar()",
+			{isException: true}
+		], [
+			"Exception thrown when calling a property on undefined",
+			"someBogusVar.someUndefinedValue",
+			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar.someUndefinedValue",
+			{isException: true}
+		], [
+			"Exception thrown when closing a brace before openning one",
+			"someBogusVar}",
+			"Syntax error : someBogusVar}",
 			{isException: true}
 		], [
 			"Exception when expression contains one closing parens too many",
