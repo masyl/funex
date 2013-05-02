@@ -68,6 +68,11 @@ var tests = [
 			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar.someUndefinedValue",
 			{isException: true}
 		], [
+			"Exception thrown when calling a property on undefined with brackets",
+			"someBogusVar['someUndefinedValue']",
+			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar.someUndefinedValue",
+			{isException: true}
+		], [
 			"Exception thrown when closing a brace before openning one",
 			"someBogusVar}",
 			"Syntax error : someBogusVar}",
