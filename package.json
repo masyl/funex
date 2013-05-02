@@ -1,7 +1,7 @@
 {
   "name": "funex",
   "description": "Module for evaluating functional expressions",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
     "expression",
@@ -30,7 +30,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/alex-seville/blanket/blob/master/LICENSE-MIT"
+      "url": "https://github.com/masyl/funex/blob/master/LICENSE-MIT"
     }
   ],
   "main": "lib/funex.js",
