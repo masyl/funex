@@ -35,12 +35,12 @@
   ],
   "main": "lib/funex.js",
   "scripts": {
-    "test": "grunt test",
     "blanket": {
       "pattern": [
         "lib"
       ]
-    }
+    },
+    "test": "grunt test --verbose"
   },
   "engines": {
     "node": ">= v0.8.0"
