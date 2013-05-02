@@ -54,8 +54,8 @@ var tests = [
 			"did not-could not-could not-wild'card'"
 		], [
 			"Exception thrown when using function call parens not on a function",
-			"()",
-			"Type error: undefined is not a function : ()",
+			"bla()",
+			"Type error: undefined is not a function : bla()",
 			{isException: true}
 		], [
 			"Exception thrown when using function call parens on undefined",
@@ -71,6 +71,21 @@ var tests = [
 			"Exception thrown when calling a property on undefined with brackets",
 			"someBogusVar['someUndefinedValue']",
 			"Cannot read property 'someUndefinedValue' of undefined : someBogusVar['someUndefinedValue']",
+			{isException: true}
+		], [
+			"Exception thrown when using argument separator (comma) outside of an argument list",
+			"obj,oups!",
+			"Syntax error : obj,",
+			{isException: true}
+		], [
+			"Exception thrown when using an array call on the global context",
+			"[cantDoThat]",
+			"Syntax error : Illegal call : [cantDoThat]",
+			{isException: true}
+		], [
+			"Exception thrown when using a function call on the global context",
+			"(cantDoThat)",
+			"Syntax error : Illegal call : (",
 			{isException: true}
 		], [
 			"Exception thrown when closing a brace before openning one",
