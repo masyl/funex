@@ -34,6 +34,7 @@ module.exports = function(grunt) {
 	        },
 	      }
 	    },
+      all: ['test/*.js'],
 	    options: {
 			reporter: 'spec',
 			ignoreLeaks: false,
