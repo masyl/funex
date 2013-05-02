@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 	    options: {
 			reporter: 'spec',
 			ignoreLeaks: false,
-			files: 'lib/funex.js'
+			files: 'test/suite.js'
 	    }
 	  },
 	  release: {

@@ -38,7 +38,7 @@
     "test": "grunt test",
     "blanket": {
       "pattern": [
-        "suite.js"
+        "lib"
       ]
     }
   },
