@@ -29,6 +29,7 @@ module.exports = function(grunt) {
 	    test: {},
 	    coverage: {
 	      options: {
+			files: 'test/suite.js',
 	        coveralls: {
 	          serviceName: 'travis-ci'
 	        },

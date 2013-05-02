@@ -5,8 +5,9 @@ var evalComparison = false;
 // var fixtures = require("./fixtures");
 
 // Fixture for using an array of objects as the execution context (behaves life memory frames)
-var fixtures = require("./fixtures-stack");
-var runner = require("./runner");
+var funex = require("../lib/funex");
+var fixtures = require("../test-utils/fixtures-stack");
+var runner = require("../test-utils/runner");
 
 // test name, expression, expected
 var tests = [
@@ -88,7 +89,6 @@ var tests = [
 		]
 ];
 
-console.time();
 runner(tests, fixtures, cycles, evalComparison);
-console.timeEnd();
+
 

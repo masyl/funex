@@ -105,3 +105,14 @@ compromising security
 - Detailed syntax documentation
 - A pretty web-site
 - A new logo
+- New homepage
+- Grunt task for optimized version
+- Add compiled version to unit tests
+- Multi-broser tests with Sauce or Testling
+- Only push minimal deps with bower
+- Capacity setting: multi-statement ()
+- Capacity setting: true/false primitives (true) 
+- Capacity setting: validator for function calls
+- Capacity setting: validator for property access
+- Capacity setting: validator for value access
+- Low capacity by default
