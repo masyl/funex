@@ -86,6 +86,7 @@ compromising security
 - Support for double quoted strings
 - Support for literal object notation (needed?)
 - Measure impact of uncompressible member names on gZipped version of the library
+- Add local LICENSE files
 - Re-avaluate the need for the test runner
 - Automate test suite on the frontend in all browsers (testling or testling)
 - Fix ie9 support

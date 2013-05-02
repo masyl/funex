@@ -19,7 +19,6 @@ module.exports = function(grunt) {
 		  }
 		}
 	},
-	//mocha --require blanket -R html-cov > coverage.html
 	jshint: {
 	    all: ['lib/funex.js'],
 	    jshintrc: '.jshintrc',
@@ -27,21 +26,18 @@ module.exports = function(grunt) {
         }
 	},
 	mochacov: {
+	    test: {},
 	    coverage: {
 	      options: {
 	        coveralls: {
-	          serviceName: 'travis-pro'
+	          serviceName: 'travis-ci'
 	        },
 	      }
 	    },
-	    test: {
-	      // options: {
-	      //   files: 'test/suite.js',
-	      //   reporter: 'dot'
-	      // }
-	    },
 	    options: {
-	      files: 'test/suite.js'
+			reporter: 'spec',
+			ignoreLeaks: false,
+			files: 'test/suite.js'
 	    }
 	  },
 	  release: {
@@ -63,8 +59,8 @@ module.exports = function(grunt) {
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-plato');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-plato');
   grunt.loadNpmTasks('grunt-mocha-cov');
   grunt.loadNpmTasks('grunt-release');
 
