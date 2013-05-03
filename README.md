@@ -103,9 +103,7 @@ compromising security
 - Detailed syntax documentation
 - A pretty web-site
 - A new logo
-- New homepage
-- Grunt task for optimized version
-- Add compiled version to unit tests
+- Apply unit tests to the minified build
 - Multi-broser tests with Sauce or Testling
 - Only push minimal deps with bower
 - Capacity setting: multi-statement ()

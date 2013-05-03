@@ -1,11 +1,11 @@
 {
   "name": "funex",
-  "version": "0.2.7",
+  "version": "0.2.15",
   "main": "lib/funex.js",
   "ignore": [
     "**/.*",
     "**/*.js.gz",
-    "package.json"
+    "package.json",
     "Gruntfile.js",
     "node_modules",
     "components",
