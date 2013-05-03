@@ -23,6 +23,7 @@ module.exports = function(grunt) {
 	    all: ['lib/funex.js'],
 	    jshintrc: '.jshintrc',
 	    options: {
+	    	validthis: true
         }
 	},
 	mochacov: {

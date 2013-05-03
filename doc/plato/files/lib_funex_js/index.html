@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">64.60</p>
+      <p class="stat">65.06</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">407</p>
+      <p class="stat">401</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">121.18</p>
+      <p class="stat">119.25</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">4.40</p>
+      <p class="stat">4.30</p>
     </div>
   </div>
 </div>
@@ -160,27 +160,25 @@
 	 * @param exp
 	 */
 	function compile(exp) {
-		//get rid of leading and trailing spaces.
-		exp = exp.trim();
-		var tokens = tokenizer(exp);
-		return function (context) {
-			// If no context was provided, create an empty one.
-			if (typeof context === "undefined") context = [
-				{}
-			];
-			//If the context is not already an array, create a one-level stack
-			if (context.constructor.name !== "Array") context = [context];
+			return compiledProxy.bind(tokenizer(exp.trim()));
+	}
 
-			// var frames = context;
-			var frames = [memoryStackFactory(context)];
+	function compiledProxy(context) {
+		// If no context was provided, create an empty one.
+		if (typeof context === "undefined")
+			context = [{}];
+		//If the context is not already an array, create a one-level stack
+		if (context.constructor.name !== "Array")
+			context = [context];
 
-			return executeTokens(tokens, frames);
-		};
+		// todo: remove needless array over memoryStackFactory
+		// "this" is the list of tokens
+		return executeTokens(this, [memoryStackFactory(context)]);
 	}
 
 
 	var tokenExecutionHandlers = {
-		"default": function (cursor) {
+		"def": function (cursor) {
 			throw __syntaxError + cursor.parsedStr;
 		},
 		"callOpen": function (cursor) {
@@ -300,10 +298,10 @@
 	 * @param context
 	 */
 	function executeTokens(tokens, context) {
-		var i;
 		var token;
 		var handler;
 
+		// todo: cursor has too much, should be simplified
 		var cursor = {
 			state: undef,
 			s0: undef, // Shorthand for the first item of the call stack
@@ -316,17 +314,16 @@
 			statementOutputs: [],
 			parsedStr: "",
 			callee: undef,
-			i: undef
+			i: 0
 		};
 
 		cursor.stack[0].d = false; // Set the current context as no dirty 
 
-		for (i = 0; i < tokens.length; i++) {
+		for (; cursor.i < tokens.length; cursor.i++) {
 			cursor.s0 = cursor.stack[0];
-			cursor.token = tokens[i];
+			cursor.token = tokens[cursor.i];
 			cursor.tokenStr = cursor.token[0];
 			cursor.state = cursor.token[1];
-			cursor.i = i;
 			cursor.parsedStr += cursor.tokenStr;
 			handler = tokenExecutionHandlers[cursor.state];
 			handler(cursor);
@@ -341,7 +338,7 @@
 	// Define token handlers
 
 	var tokenHandlers = {
-		"default": function (cursor) {
+		"def": function (cursor) {
 			var state = stateChars[cursor.chr];
 			if (state !== undef) cursor.newState = state;
 			if (__charMapNumericStart.indexOf(cursor.chr) + 1) {
@@ -352,36 +349,36 @@
 		},
 		"callOpen": function (cursor) {
 			if (cursor.chr != "(" || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"callClose": function (cursor) {
 			if (cursor.chr != ")" || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"arrayOpen": function (cursor) {
 			if (cursor.chr != "[" || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"arrayClose": function (cursor) {
 			if (cursor.chr != "]" || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"statementSeparator": function (cursor) {
 			if (cursor.chr != ";" || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"dot": function (cursor) {
 			if (cursor.chr != "." || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"argsSeparator": function (cursor) {
 			if (cursor.chr != "," || (cursor.token.length == 1))
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"whitespace": function (cursor) {
 			// todo: add other whitespace codes
 			if (__charMapWhiteSpace.indexOf(cursor.chr) < 0)
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"str": function (cursor) {
 			// If the last char is a "'""
@@ -394,7 +391,7 @@
 				}
 				// If the last char is a "'" and not the first char
 				else if (cursor.token.length > 1) {
-					cursor.newState = "default";
+					cursor.newState = "def";
 					cursor.chr = "";
 					cursor.token = cursor.token.substring(0) + "'";
 				}
@@ -412,7 +409,7 @@
 				}
 				// If the last char is a "'" and not the first char
 				else if (cursor.token.length > 1) {
-					cursor.newState = "default";
+					cursor.newState = "def";
 					cursor.token = cursor.token.substring(0) + '"';
 					cursor.chr = "";
 				}
@@ -422,18 +419,18 @@
 			if (cursor.chr == "{") cursor.braces++;
 			if (cursor.chr == "}") cursor.braces--;
 			if (cursor.braces === 0) {
-				cursor.newState = "default";
+				cursor.newState = "def";
 				cursor.token += cursor.chr;
 				cursor.i++;
 			}
 		},
 		"numeric": function (cursor) {
 			if (__charMapNumeric.indexOf(cursor.chr) < 0)
-				cursor.newState = "default";
+				cursor.newState = "def";
 		},
 		"name" : function (cursor) {
 			if (__charMapAlphaExtendedContinued.indexOf(cursor.chr) < 0)
-				cursor.newState = "default";
+				cursor.newState = "def";
 		}
 	};
 
@@ -451,17 +448,12 @@
 			chr: null,
 			token: "",
 			exp: exp,
-			state: "default",
+			state: "def",
 			newState: null,
 			i: 0
 		};
 
-		// special case for empty string made of consecutive single quoted : "''"
-		// todo: figure out how to handle this without an special code path
-		if (cursor.exp === "''") return [["", "str"]];
-		if (cursor.exp === '""') return [["", "str2"]];
-
-		for (cursor.i = 0; cursor.i < cursor.exp.length; cursor.i++) {
+		for (; cursor.i < cursor.exp.length; cursor.i++) {
 			cursor.chr = cursor.exp[cursor.i];
 			cursor.newState = null;
 			tokenHandlers[cursor.state](cursor);
@@ -493,8 +485,10 @@
 		return instructions;
 	}
 
-	if (typeof module == "object" && typeof window == "undefined") module.exports = compile;
-	if (typeof window == "object" && global === window) window.funex = compile;
+	if (typeof module == "object" && typeof window == "undefined")
+		module.exports = compile;
+	if (typeof window == "object" && global === window)
+		window.funex = compile;
 
 })(this);</textarea>
   </div>
