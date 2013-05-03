@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 		type = type ? type : 'patch';
 		grunt.task.run('default');
 		grunt.task.run('bumpup:' + type); // Bump up the version
-		grunt.task.run('exec:add');
+		grunt.task.run('exec:add'); // Add all modified files
 		grunt.task.run('release');
 	});
 
