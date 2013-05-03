@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">64.06</p>
+      <p class="stat">64.60</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">423</p>
+      <p class="stat">407</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">113.88</p>
+      <p class="stat">121.18</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">4.32</p>
+      <p class="stat">4.40</p>
     </div>
   </div>
 </div>
@@ -321,17 +321,14 @@
 
 		cursor.stack[0].d = false; // Set the current context as no dirty 
 
-		for (i = 0; i < cursor.tokens.length; i++) {
+		for (i = 0; i < tokens.length; i++) {
 			cursor.s0 = cursor.stack[0];
 			cursor.token = tokens[i];
 			cursor.tokenStr = cursor.token[0];
 			cursor.state = cursor.token[1];
 			cursor.i = i;
 			cursor.parsedStr += cursor.tokenStr;
-
 			handler = tokenExecutionHandlers[cursor.state];
-			if (!handler)
-				console.log("-------------", cursor.state);
 			handler(cursor);
 		}
 		cursor.s0 = cursor.stack[0];
@@ -344,93 +341,99 @@
 	// Define token handlers
 
 	var tokenHandlers = {
-		"default": function (cursor, chr) {
-			var newState = stateChars[chr];
-			if (newState !== undef) return [newState];
-			if (__charMapNumericStart.indexOf(chr) + 1) {
-				newState = "numeric";
-			} else if (__charMapAlphaExtended.indexOf(chr) + 1) {
-				newState = "name";
+		"default": function (cursor) {
+			var state = stateChars[cursor.chr];
+			if (state !== undef) cursor.newState = state;
+			if (__charMapNumericStart.indexOf(cursor.chr) + 1) {
+				cursor.newState = "numeric";
+			} else if (__charMapAlphaExtended.indexOf(cursor.chr) + 1) {
+				cursor.newState = "name";
 			}
-			return [newState];
 		},
-		"callOpen": function (cursor, chr, token) {
-			if (chr != "(" || (token.length == 1)) return ["default"];
+		"callOpen": function (cursor) {
+			if (cursor.chr != "(" || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"callClose": function (cursor, chr, token) {
-			if (chr != ")" || (token.length == 1)) return ["default"];
+		"callClose": function (cursor) {
+			if (cursor.chr != ")" || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"arrayOpen": function (cursor, chr, token) {
-			if (chr != "[" || (token.length == 1)) return ["default"];
+		"arrayOpen": function (cursor) {
+			if (cursor.chr != "[" || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"arrayClose": function (cursor, chr, token) {
-			if (chr != "]" || (token.length == 1)) return ["default"];
+		"arrayClose": function (cursor) {
+			if (cursor.chr != "]" || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"statementSeparator": function (cursor, chr, token) {
-			if (chr != ";" || (token.length == 1)) return ["default"];
+		"statementSeparator": function (cursor) {
+			if (cursor.chr != ";" || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"dot": function (cursor, chr, token) {
-			if (chr != "." || (token.length == 1)) return ["default"];
+		"dot": function (cursor) {
+			if (cursor.chr != "." || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"argsSeparator": function (cursor, chr, token) {
-			if (chr != "," || (token.length == 1)) return ["default"];
+		"argsSeparator": function (cursor) {
+			if (cursor.chr != "," || (cursor.token.length == 1))
+				cursor.newState = "default";
 		},
-		"whitespace": function (cursor, chr, token) {
+		"whitespace": function (cursor) {
 			// todo: add other whitespace codes
-			if (__charMapWhiteSpace.indexOf(chr) < 0) return ["default"];
+			if (__charMapWhiteSpace.indexOf(cursor.chr) < 0)
+				cursor.newState = "default";
 		},
-		"str": function (cursor, chr, token, exp, i) {
-			var _chr = chr;
-			var _token = token;
+		"str": function (cursor) {
 			// If the last char is a "'""
-			if (chr == "'") {
+			if (cursor.chr == "'") {
 				//if the character is a "'" and is preceeded by a "\\", then we
 				//update the token and keep going (we remove the escaping)
-				if ((token.length > 1 || token === "'") && exp[i-1] === "\\" ) {
-					_token = token.substring(0, token.length-1);
-					return [undef, _chr, _token];
+				if ((cursor.token.length > 1 || cursor.token === "'") && cursor.exp[cursor.i-1] === "\\" ) {
+					cursor.newState = undef;
+					cursor.token = cursor.token.substring(0, cursor.token.length-1);
 				}
 				// If the last char is a "'" and not the first char
-				else if (token.length > 1) {
-					_token = token.substring(0) + "'";
-					_chr = "";
-					return ["default", _chr, _token];
+				else if (cursor.token.length > 1) {
+					cursor.newState = "default";
+					cursor.chr = "";
+					cursor.token = cursor.token.substring(0) + "'";
 				}
 			}
 		},
 		// todo: generalize str and str2
-		"str2": function (cursor, chr, token, exp, i) {
-			var _chr = chr;
-			var _token = token;
+		"str2": function (cursor) {
 			// If the last char is a '"'
-			if (chr == '"') {
+			if (cursor.chr == '"') {
 				//if the character is a "'" and is preceeded by a "\\", then we
 				//update the token and keep going (we remove the escaping)
-				if ((token.length > 1 || token === '"') && exp[i-1] === "\\" ) {
-					_token = token.substring(0, token.length-1);
-					return [undef, _chr, _token];
+				if ((cursor.token.length > 1 || cursor.token === '"') && cursor.exp[cursor.i-1] === "\\" ) {
+					cursor.newState = undef;
+					cursor.token = cursor.token.substring(0, cursor.token.length-1);
 				}
 				// If the last char is a "'" and not the first char
-				else if (token.length > 1) {
-					_token = token.substring(0) + '"';
-					_chr = "";
-					return ["default", _chr, _token];
+				else if (cursor.token.length > 1) {
+					cursor.newState = "default";
+					cursor.token = cursor.token.substring(0) + '"';
+					cursor.chr = "";
 				}
 			}
 		},
-		"json": function (cursor, chr, token, exp, i) {
-			if (chr == "{") cursor.braces++;
-			if (chr == "}") cursor.braces--;
-			if (cursor.braces === 0)
-				return ["default", "", token + chr, i + 1];
+		"json": function (cursor) {
+			if (cursor.chr == "{") cursor.braces++;
+			if (cursor.chr == "}") cursor.braces--;
+			if (cursor.braces === 0) {
+				cursor.newState = "default";
+				cursor.token += cursor.chr;
+				cursor.i++;
+			}
 		},
-		"numeric": function (cursor, chr) {
-			if (__charMapNumeric.indexOf(chr) < 0)
-				return ["default"];
+		"numeric": function (cursor) {
+			if (__charMapNumeric.indexOf(cursor.chr) < 0)
+				cursor.newState = "default";
 		},
-		"name" : function (cursor, chr) {
-			if (__charMapAlphaExtendedContinued.indexOf(chr) < 0)
-				return ["default"];
+		"name" : function (cursor) {
+			if (__charMapAlphaExtendedContinued.indexOf(cursor.chr) < 0)
+				cursor.newState = "default";
 		}
 	};
 
@@ -442,70 +445,51 @@
 	 * @param exp
 	 */
 	function tokenizer(exp) {
-		var i;
-		var chr;
 		var instructions = [];
-		var newState;
-		var token = "";
-		var state = "default";
-		var tokenHandler;
-		var tokenHandlerResult;
 		var cursor = {
-			braces: 0 // The number of brackets accumulated (for json handling)
+			braces: 0, // The number of brackets accumulated (for json handling)
+			chr: null,
+			token: "",
+			exp: exp,
+			state: "default",
+			newState: null,
+			i: 0
 		};
 
 		// special case for empty string made of consecutive single quoted : "''"
 		// todo: figure out how to handle this without an special code path
-		if (exp === "''"){
-			instructions.push(["", "str"]);
-			return instructions;
-		}
-		if (exp === '""'){
-			instructions.push(["", "str2"]);
-			return instructions;
-		}
+		if (cursor.exp === "''") return [["", "str"]];
+		if (cursor.exp === '""') return [["", "str2"]];
 
-		for (i = 0; i < exp.length; i++) {
-			chr = exp[i];
-			newState = undef;
-			tokenHandler = tokenHandlers[state];
-			tokenHandlerResult = tokenHandler(cursor, chr, token, exp, i);
-			// return [state, chr, token];
+		for (cursor.i = 0; cursor.i < cursor.exp.length; cursor.i++) {
+			cursor.chr = cursor.exp[cursor.i];
+			cursor.newState = null;
+			tokenHandlers[cursor.state](cursor);
 
-			// Handle the return value for the token Handler
-			if (tokenHandlerResult && tokenHandlerResult.length > 0) {
-				newState = tokenHandlerResult[0];
-				if (tokenHandlerResult.length > 1) {
-					chr = tokenHandlerResult[1];
-					if (tokenHandlerResult.length > 2) {
-						token = tokenHandlerResult[2];
-					}
-				}
-			}
-
+				// console.log(cursor);
 			// If state changed, set the new state push the token on the
 			// stack of tokens and start a new token
-			if (newState) {
+			if (cursor.newState) {
 				// If the current token is not empty,
 				// push it in the instruction stack
-				if (token.length)
-					instructions.push([token, state]);
+				if (cursor.token.length)
+					instructions.push([cursor.token, cursor.state]);
 				// Get the new state returned by the state handler
-				state = newState;
+				cursor.state = cursor.newState;
 				// Flush the token
-				token = "";
+				cursor.token = "";
 				// Unless the current character has been flushed (like for quotes
 				// around strings, set back the index for the next iteration
-				if (chr !== "") i--;
+				if (cursor.chr !== "") cursor.i--;
 			} else {
 				// Push the parsing result of that char on the token
-				token += chr;
+				cursor.token = cursor.token + cursor.chr;
 			}
 		}
 		// Push the last token
-		if (token.length){
-			instructions.push([token, state]);
-		}
+		if (cursor.token.length)
+			instructions.push([cursor.token, cursor.state]);
+
 		return instructions;
 	}
 
