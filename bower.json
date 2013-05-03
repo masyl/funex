@@ -10,6 +10,7 @@
     "node_modules",
     "components",
     "test",
+    "test-utils",
     "doc"
   ]
 }

@@ -112,3 +112,4 @@ compromising security
 - Capacity setting: validator for property access
 - Capacity setting: validator for value access
 - Low capacity by default
+- Simplify the installed bower package
