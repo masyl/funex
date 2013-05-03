@@ -1,7 +1,7 @@
 {
   "name": "funex",
   "description": "Module for evaluating functional expressions",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
     "expression",
@@ -54,7 +54,8 @@
     "grunt-contrib-jshint": "~0.4.3",
     "grunt-release": "git://github.com/masyl/grunt-release.git",
     "grunt-mocha-cov": "~0.0.4",
-    "grunt-bumpup": "~0.2.0"
+    "grunt-bumpup": "~0.2.0",
+    "grunt-exec": "~0.4.0"
   },
   "dependencies": {}
 }
