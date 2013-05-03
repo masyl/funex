@@ -51,11 +51,6 @@ module.exports = function(grunt) {
 				file: 'package.json',
 				add: true,
 				tag: true,
-
-				// commit: false,
-				// push: false,
-				// pushTags: false,
-				// npm: false,
 				commit: true,
 				push: true,
 				pushTags: true,
@@ -64,6 +59,11 @@ module.exports = function(grunt) {
 				tagName: '<%= version %>',
 				commitMessage: 'Version bump to <%= version %>',
 				tagMessage: 'Version <%= version %>'
+			}
+		},
+		exec: {
+			"add": {
+				cmd: "git add ."
 			}
 		}
 	});
@@ -75,6 +75,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-cov');
 	grunt.loadNpmTasks('grunt-bumpup');
 	grunt.loadNpmTasks('grunt-release');
+	grunt.loadNpmTasks('grunt-exec');
 
 	grunt.registerTask('gzip', function () {
 		var done = this.async();
@@ -90,8 +91,9 @@ module.exports = function(grunt) {
 	grunt.registerTask('test', ['mochacov:test']);
 	grunt.registerTask('rel', function (type) {
 		type = type ? type : 'patch';
-		grunt.task.run('bumpup:' + type); // Bump up the version
 		grunt.task.run('default');
+		grunt.task.run('bumpup:' + type); // Bump up the version
+		grunt.task.run('exec:add');
 		grunt.task.run('release');
 	});
 
