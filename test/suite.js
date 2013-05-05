@@ -5,7 +5,7 @@ var evalComparison = false;
 // var fixtures = require("./fixtures");
 
 // Fixture for using an array of objects as the execution context (behaves life memory frames)
-var funex = require("../lib/funex");
+var funex = require("../dist/node/funex");
 var fixtures = require("../test-utils/fixtures-stack");
 var runner = require("../test-utils/runner");
 

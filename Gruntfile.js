@@ -7,22 +7,26 @@ module.exports = function(grunt) {
 			options: {
 				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 			},
-			build: {
-				src: 'lib/funex.js',
-				dest: 'build/funex.min.js'
+			browser: {
+				src: 'dist/browser/funex.js',
+				dest: 'dist/browser/funex.min.js'
+			},
+			amd: {
+				src: 'dist/amd/funex.js',
+				dest: 'dist/amd/funex.min.js'
 			}
 		},
 		plato: {
 			your_task: {
 				files: {
-					'doc/plato': ['lib/funex.js'],
+					'doc/plato': ['src/funex.js'],
 				}
 			}
 		},
 		jshint: {
-			all: ['lib/funex.js'],
-			jshintrc: '.jshintrc',
+			all: ['dist/browser/funex.js'],
 			options: {
+				jshintrc: '.jshintrc',
 				validthis: true
 			}
 		},
@@ -65,6 +69,26 @@ module.exports = function(grunt) {
 			"add": {
 				cmd: "git add ."
 			}
+		},
+		build: {
+			source: "src/funex.js",
+			builds: [
+				{
+					name: "for Node.js",
+					source: "src/wrapper-node.js",
+					target: "dist/node/funex.js"
+				},
+				{
+					name: "for Browsers",
+					source: "src/wrapper-browser.js",
+					target: "dist/browser/funex.js"
+				},
+				{
+					name: "for AMD loaders",
+					source: "src/wrapper-amd.js",
+					target: "dist/amd/funex.js"
+				}
+			]
 		}
 	});
 
@@ -79,14 +103,14 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('gzip', function () {
 		var done = this.async();
-		require('child_process').exec('gzip -c -9 build/funex.min.js > build/funex.min.js.gz', function (err, stdout) {
+		require('child_process').exec('gzip -c -9 dist/browser/funex.min.js > dist/funex.min.js.gz', function (err, stdout) {
 			grunt.log.write(stdout);
 			done(err);
 		});
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['plato', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
+	grunt.registerTask('default', ['plato', 'build', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
 	grunt.registerTask('travis', ['mochacov:coverage']);
 	grunt.registerTask('test', ['mochacov:test']);
 	grunt.registerTask('rel', function (type) {
@@ -95,6 +119,26 @@ module.exports = function(grunt) {
 		grunt.task.run('bumpup:' + type); // Bump up the version
 		grunt.task.run('exec:add'); // Add all modified files
 		grunt.task.run('release');
+	});
+
+	grunt.registerTask('build', function () {
+		var cfg = grunt.config("build");
+		var pkg = grunt.config("pkg");
+		var source = grunt.file.read(cfg.source);
+		var builds = cfg.builds;
+		if (builds) {
+			builds.forEach(function (build) {
+				output = grunt.file.read(build.source);
+				output = output
+					.replace("{name}", pkg.name)
+					.replace("{version}", pkg.version)
+					.replace("{buildName}", build.name)
+					.replace("{copyright}", pkg.copyright)
+					.replace("{now}", ( new Date() ).toISOString().replace( /T.*/, "" ))
+					.replace("{source}", source);
+				grunt.file.write(build.target, output);
+			});
+		}
 	});
 
 };

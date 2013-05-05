@@ -77,8 +77,13 @@ compromising security
 	// Call the function with a context
 	var value = fn(context);
 
+## License
+
+Released in the Public Domain - http://creativecommons.org/publicdomain/zero/1.0/
+
 
 ## Roadmap
+- Create browser version with closure using grunt
 - Document : Whitespace support
 - Document : Support for Multi-statement
 - Document : Code Quality and Hygiene

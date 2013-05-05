@@ -37,7 +37,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>lib/funex.js</h1>
+    <h1>src/funex.js</h1>
   </div>
 </div>
 
@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.60</p>
+      <p class="stat">68.81</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">403</p>
+      <p class="stat">396</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">120.83</p>
+      <p class="stat">116.16</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">4.22</p>
+      <p class="stat">4.16</p>
     </div>
   </div>
 </div>
@@ -90,10 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">"use strict";
-// (function (global) {
-
-// Local definition of undefined
+    <textarea id="file-source" class="span12">// Local definition of undefined
 var undef = void 0;
 
 // String constants
@@ -108,6 +105,8 @@ var __charMapNumeric = __charMapNumericStart + ".";
 var __charMapAlpha = "abcdefghijklmnopqrstuvwxyz";
 var __charMapAlphaExtended = __charMapAlpha + __charMapAlpha.toUpperCase() + "_$";
 var __charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericStart;
+
+// State Entry Characters
 var stateChars = {
 	"{": "json",
 	"(": "callOpen",
@@ -155,27 +154,6 @@ function MemoryStackFactoryFrame(obj) {
 
 
 
-/**
- * Compile a funex string expression into a executable function
- * @param exp
- */
-function compile(exp) {
-		return compiledProxy.bind(tokenizer(exp.trim()));
-}
-
-function compiledProxy(context) {
-	// If no context was provided, create an empty one.
-	if (typeof context === "undefined")
-		context = [{}];
-	//If the context is not already an array, create a one-level stack
-	if (context.constructor.name !== "Array")
-		context = [context];
-
-	// todo: remove needless array over memoryStackFactory
-	// "this" is the list of tokens
-	return executeTokens(this, [memoryStackFactory(context)]);
-}
-
 
 var tokenExecutionHandlers = {
 	"def": function (cursor) {
@@ -194,7 +172,7 @@ var tokenExecutionHandlers = {
 		args.d = false; // Start as not dirty
 		cursor.stack.unshift(args);
 		cursor.value = undef;
-		cursor.valueParent = context[0];
+		cursor.valueParent = cursor.context[0];
 	},
 	"callClose": function (cursor) {
 		// Pop the stack and then call the new stack head
@@ -278,18 +256,17 @@ var tokenExecutionHandlers = {
 	"statementSeparator": function (cursor) {
 		//todo: check if the argSeparator is used in a correct setting (unterminated statement)
 		if (cursor.s0._)
-			throw __syntaxError + parsedStr;
+			throw __syntaxError + cursor.parsedStr;
 		// If a new context is dirty (statement has been started)
 		// Store the current value as a candidate for output
-		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value); 
+		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value);
 		cursor.s0.d = false;
 		// Clear the context and values
 		cursor.s0[0] = cursor.context[0];
 		cursor.valueParent = undef;
 		cursor.value = undef;
 	},
-	"whitespace": function (cursor) {
-	}
+	"whitespace": function () {}
 };
 
 /**
@@ -298,15 +275,14 @@ var tokenExecutionHandlers = {
  * @param context
  */
 function executeTokens(tokens, context) {
-	var token;
-	var handler;
-
 	// todo: cursor has too much, should be simplified
 	var cursor = {
 		state: undef,
 		s0: undef, // Shorthand for the first item of the call stack
 		context: context,
-		stack: [ [context[0]] ], //todo: array encapsulation not needed anymore since we simulate the call stack with the prototype chain
+		//todo: array encapsulation not needed anymore since we simulate
+		//the call stack with the prototype chain
+		stack: [ [context[0]] ],
 		value: undef,
 		valueParent: context[0],
 		tokens: tokens,
@@ -325,8 +301,7 @@ function executeTokens(tokens, context) {
 		cursor.tokenStr = cursor.token[0];
 		cursor.state = cursor.token[1];
 		cursor.parsedStr += cursor.tokenStr;
-		handler = tokenExecutionHandlers[cursor.state];
-		handler(cursor);
+		tokenExecutionHandlers[cursor.state](cursor);
 	}
 	cursor.s0 = cursor.stack[0];
 	// If a new context is dirty (statement has been started)
@@ -348,31 +323,31 @@ var tokenHandlers = {
 		}
 	},
 	"callOpen": function (cursor) {
-		if (cursor.chr != "(" || (cursor.token.length == 1))
+		if (cursor.chr !== "(" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"callClose": function (cursor) {
-		if (cursor.chr != ")" || (cursor.token.length == 1))
+		if (cursor.chr !== ")" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"arrayOpen": function (cursor) {
-		if (cursor.chr != "[" || (cursor.token.length == 1))
+		if (cursor.chr !== "[" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"arrayClose": function (cursor) {
-		if (cursor.chr != "]" || (cursor.token.length == 1))
+		if (cursor.chr !== "]" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"statementSeparator": function (cursor) {
-		if (cursor.chr != ";" || (cursor.token.length == 1))
+		if (cursor.chr !== ";" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"dot": function (cursor) {
-		if (cursor.chr != "." || (cursor.token.length == 1))
+		if (cursor.chr !== "." || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"argsSeparator": function (cursor) {
-		if (cursor.chr != "," || (cursor.token.length == 1))
+		if (cursor.chr !== "," || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"whitespace": function (cursor) {
@@ -382,7 +357,7 @@ var tokenHandlers = {
 	},
 	"str": function (cursor) {
 		// If the last char is a "'""
-		if (cursor.chr == "'") {
+		if (cursor.chr === "'") {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
 			if ((cursor.token.length > 1 || cursor.token === "'") && cursor.exp[cursor.i-1] === "\\" ) {
@@ -401,7 +376,7 @@ var tokenHandlers = {
 	// todo: generalize str and str2
 	"str2": function (cursor) {
 		// If the last char is a '"'
-		if (cursor.chr == '"') {
+		if (cursor.chr === '"') {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
 			if ((cursor.token.length > 1 || cursor.token === '"') && cursor.exp[cursor.i-1] === "\\" ) {
@@ -418,8 +393,8 @@ var tokenHandlers = {
 		}
 	},
 	"json": function (cursor) {
-		if (cursor.chr == "{") cursor.braces++;
-		if (cursor.chr == "}") cursor.braces--;
+		if (cursor.chr === "{") cursor.braces++;
+		if (cursor.chr === "}") cursor.braces--;
 		if (cursor.braces === 0) {
 			cursor.newState = "def";
 			cursor.token += cursor.chr;
@@ -491,12 +466,27 @@ function nextChar(cursor, instructions) {
 	}
 }
 
-// if (typeof module == "object" && typeof window == "undefined")
-	module.exports = compile;
-// if (typeof window == "object" && global === window)
-	// window.funex = compile;
+function compiledProxy(context) {
+	// If no context was provided, create an empty one.
+	if (typeof context === "undefined")
+		context = [{}];
+	//If the context is not already an array, create a one-level stack
+	if (context.constructor.name !== "Array")
+		context = [context];
 
-// })(this);</textarea>
+	// todo: remove needless array over memoryStackFactory
+	// "this" is the list of tokens
+	/*jshint validthis:true */
+	return executeTokens(this, [memoryStackFactory(context)]);
+}
+
+/**
+ * Compile a funex string expression into a executable function
+ * @param exp
+ */
+function compile(exp) {
+		return compiledProxy.bind(tokenizer(exp.trim()));
+}</textarea>
   </div>
 </div>
 

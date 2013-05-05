@@ -1,97 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title></title>
+/*! funex v0.2.20 for AMD loaders | 2013-05-05 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
+(function (define) {
+"use strict";
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-
-  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
-  <link href="../../assets/css/plato.css" rel="stylesheet">
-  <link href="../../assets/css/plato-file.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-<div class="navbar navbar-fixed-top">
-  <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
-      <li>
-        <a href="../../index.html">Report Home</a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<div class="jumbotron">
-  <div class="container">
-    <h1>lib/funex.js</h1>
-  </div>
-</div>
-
-<div class="container aggregate-stats">
-  <div class="row">
-    <div class="span6">
-      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.60</p>
-    </div>
-    <div class="span6">
-      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">403</p>
-    </div>
-  </div>
-  <div class="row historical">
-    <div class="span6">
-      <p id="chart_historical_maint" class="chart"></p>
-    </div>
-    <div class="span6">
-      <p id="chart_historical_sloc" class="chart"></p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="span6">
-      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">120.83</p>
-    </div>
-    <div class="span6">
-      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">4.22</p>
-    </div>
-  </div>
-</div>
-
-<div class="container charts">
-  <div class="row">
-    <h2 class="header">Function weight</h2>
-  </div>
-  <div class="row">
-    <div class="span6">
-      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
-      <div id="fn-by-complexity" class="stat"></div>
-    </div>
-    <div class="span6">
-      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
-      <div id="fn-by-sloc" class="stat"></div>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <textarea id="file-source" class="span12">"use strict";
-// (function (global) {
 
 // Local definition of undefined
 var undef = void 0;
@@ -108,6 +18,8 @@ var __charMapNumeric = __charMapNumericStart + ".";
 var __charMapAlpha = "abcdefghijklmnopqrstuvwxyz";
 var __charMapAlphaExtended = __charMapAlpha + __charMapAlpha.toUpperCase() + "_$";
 var __charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericStart;
+
+// State Entry Characters
 var stateChars = {
 	"{": "json",
 	"(": "callOpen",
@@ -155,27 +67,6 @@ function MemoryStackFactoryFrame(obj) {
 
 
 
-/**
- * Compile a funex string expression into a executable function
- * @param exp
- */
-function compile(exp) {
-		return compiledProxy.bind(tokenizer(exp.trim()));
-}
-
-function compiledProxy(context) {
-	// If no context was provided, create an empty one.
-	if (typeof context === "undefined")
-		context = [{}];
-	//If the context is not already an array, create a one-level stack
-	if (context.constructor.name !== "Array")
-		context = [context];
-
-	// todo: remove needless array over memoryStackFactory
-	// "this" is the list of tokens
-	return executeTokens(this, [memoryStackFactory(context)]);
-}
-
 
 var tokenExecutionHandlers = {
 	"def": function (cursor) {
@@ -194,7 +85,7 @@ var tokenExecutionHandlers = {
 		args.d = false; // Start as not dirty
 		cursor.stack.unshift(args);
 		cursor.value = undef;
-		cursor.valueParent = context[0];
+		cursor.valueParent = cursor.context[0];
 	},
 	"callClose": function (cursor) {
 		// Pop the stack and then call the new stack head
@@ -278,18 +169,17 @@ var tokenExecutionHandlers = {
 	"statementSeparator": function (cursor) {
 		//todo: check if the argSeparator is used in a correct setting (unterminated statement)
 		if (cursor.s0._)
-			throw __syntaxError + parsedStr;
+			throw __syntaxError + cursor.parsedStr;
 		// If a new context is dirty (statement has been started)
 		// Store the current value as a candidate for output
-		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value); 
+		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value);
 		cursor.s0.d = false;
 		// Clear the context and values
 		cursor.s0[0] = cursor.context[0];
 		cursor.valueParent = undef;
 		cursor.value = undef;
 	},
-	"whitespace": function (cursor) {
-	}
+	"whitespace": function () {}
 };
 
 /**
@@ -298,15 +188,14 @@ var tokenExecutionHandlers = {
  * @param context
  */
 function executeTokens(tokens, context) {
-	var token;
-	var handler;
-
 	// todo: cursor has too much, should be simplified
 	var cursor = {
 		state: undef,
 		s0: undef, // Shorthand for the first item of the call stack
 		context: context,
-		stack: [ [context[0]] ], //todo: array encapsulation not needed anymore since we simulate the call stack with the prototype chain
+		//todo: array encapsulation not needed anymore since we simulate
+		//the call stack with the prototype chain
+		stack: [ [context[0]] ],
 		value: undef,
 		valueParent: context[0],
 		tokens: tokens,
@@ -325,8 +214,7 @@ function executeTokens(tokens, context) {
 		cursor.tokenStr = cursor.token[0];
 		cursor.state = cursor.token[1];
 		cursor.parsedStr += cursor.tokenStr;
-		handler = tokenExecutionHandlers[cursor.state];
-		handler(cursor);
+		tokenExecutionHandlers[cursor.state](cursor);
 	}
 	cursor.s0 = cursor.stack[0];
 	// If a new context is dirty (statement has been started)
@@ -348,31 +236,31 @@ var tokenHandlers = {
 		}
 	},
 	"callOpen": function (cursor) {
-		if (cursor.chr != "(" || (cursor.token.length == 1))
+		if (cursor.chr !== "(" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"callClose": function (cursor) {
-		if (cursor.chr != ")" || (cursor.token.length == 1))
+		if (cursor.chr !== ")" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"arrayOpen": function (cursor) {
-		if (cursor.chr != "[" || (cursor.token.length == 1))
+		if (cursor.chr !== "[" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"arrayClose": function (cursor) {
-		if (cursor.chr != "]" || (cursor.token.length == 1))
+		if (cursor.chr !== "]" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"statementSeparator": function (cursor) {
-		if (cursor.chr != ";" || (cursor.token.length == 1))
+		if (cursor.chr !== ";" || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"dot": function (cursor) {
-		if (cursor.chr != "." || (cursor.token.length == 1))
+		if (cursor.chr !== "." || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"argsSeparator": function (cursor) {
-		if (cursor.chr != "," || (cursor.token.length == 1))
+		if (cursor.chr !== "," || (cursor.token.length === 1))
 			cursor.newState = "def";
 	},
 	"whitespace": function (cursor) {
@@ -382,7 +270,7 @@ var tokenHandlers = {
 	},
 	"str": function (cursor) {
 		// If the last char is a "'""
-		if (cursor.chr == "'") {
+		if (cursor.chr === "'") {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
 			if ((cursor.token.length > 1 || cursor.token === "'") && cursor.exp[cursor.i-1] === "\\" ) {
@@ -401,7 +289,7 @@ var tokenHandlers = {
 	// todo: generalize str and str2
 	"str2": function (cursor) {
 		// If the last char is a '"'
-		if (cursor.chr == '"') {
+		if (cursor.chr === '"') {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
 			if ((cursor.token.length > 1 || cursor.token === '"') && cursor.exp[cursor.i-1] === "\\" ) {
@@ -418,8 +306,8 @@ var tokenHandlers = {
 		}
 	},
 	"json": function (cursor) {
-		if (cursor.chr == "{") cursor.braces++;
-		if (cursor.chr == "}") cursor.braces--;
+		if (cursor.chr === "{") cursor.braces++;
+		if (cursor.chr === "}") cursor.braces--;
 		if (cursor.braces === 0) {
 			cursor.newState = "def";
 			cursor.token += cursor.chr;
@@ -491,35 +379,38 @@ function nextChar(cursor, instructions) {
 	}
 }
 
-// if (typeof module == "object" && typeof window == "undefined")
-	module.exports = compile;
-// if (typeof window == "object" && global === window)
-	// window.funex = compile;
+function compiledProxy(context) {
+	// If no context was provided, create an empty one.
+	if (typeof context === "undefined")
+		context = [{}];
+	//If the context is not already an array, create a one-level stack
+	if (context.constructor.name !== "Array")
+		context = [context];
 
-// })(this);</textarea>
-  </div>
-</div>
+	// todo: remove needless array over memoryStackFactory
+	// "this" is the list of tokens
+	/*jshint validthis:true */
+	return executeTokens(this, [memoryStackFactory(context)]);
+}
 
-<footer class="footer">
-  <div class="container">
-    <p>.</p>
-  </div>
-</footer>
+/**
+ * Compile a funex string expression into a executable function
+ * @param exp
+ */
+function compile(exp) {
+		return compiledProxy.bind(tokenizer(exp.trim()));
+}
 
-<script type="text/html" id="complexity-popover-template">
-  <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
-  </div>
-</script>
 
-<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
-<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
-<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
-<script type="text/javascript" src="report.js"></script>
-<script type="text/javascript" src="report.history.js"></script>
-<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
-</body>
-</html>
+
+
+
+// AMD define happens at the end for compatibility with AMD loaders
+// that don't enforce next-turn semantics on modules.
+if (typeof define === 'function' && define.amd) {
+	define('funex', function() {
+		return compile;
+	});
+}
+
+})(define);

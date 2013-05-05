@@ -1,7 +1,7 @@
 {
   "name": "funex",
-  "version": "0.2.20",
-  "main": "lib/funex.js",
+  "version": "0.2.21",
+  "main": "dist/funex.js",
   "ignore": [
     "**/.*",
     "**/*.js.gz",
