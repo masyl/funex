@@ -1,7 +1,7 @@
 {
   "name": "funex",
   "description": "Module for evaluating functional expressions",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
     "expression",
