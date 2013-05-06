@@ -1,4 +1,4 @@
-/*! funex v0.2.36 for Browsers | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
+/*! funex v0.2.37 for Browsers | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
 (function (global) {
 "use strict";
 
@@ -10,6 +10,8 @@ var undef = void 0;
 var __function = "function";
 var __illegalCall = "Illegal call : ";
 var __syntaxError = "Syntax error : ";
+var __cannotReadProperty = "Cannot read property ";
+var __ofUndefined = " of undefined : ";
 
 // Character maps
 var __charMapNumericStart = "1234567890-";
@@ -22,18 +24,18 @@ var __charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericS
 // State Entry Characters
 var stateChars = {
 	"{": "json",
-	"(": "callOpen",
-	")": "callClose",
-	"[": "arrayOpen",
-	"]": "arrayClose",
-	".": "dot",
-	",": "argsSeparator",
-	" ": "whitespace",
-	"\n": "whitespace",
-	"\t": "whitespace",
-	"'": "str",
-	'"': "str2",
-	";": "statementSeparator"
+	"(": "call+",
+	")": "call-",
+	"[": "arr+",
+	"]": "arr-",
+	".": "dot", // Dot notation
+	",": "arg", // Argument separator
+	" ": "w",
+	"\n": "w",
+	"\t": "w", // whitespaces
+	"'": "str", // Single Quoted Strings
+	'"': "str2", // Double Quoted Strings
+	";": "sep" // Statement separator
 };
 
 
@@ -72,7 +74,7 @@ var tokenExecutionHandlers = {
 	"def": function (cursor) {
 		throw __syntaxError + cursor.parsedStr;
 	},
-	"callOpen": function (cursor) {
+	"call+": function (cursor) {
 		if (cursor.s0[0] === cursor.context[0]) // Prevent a function call on undefined
 			throw __syntaxError + __illegalCall + cursor.parsedStr;
 
@@ -80,14 +82,14 @@ var tokenExecutionHandlers = {
 		// Add a fresh context in the stack
 		var args = [cursor.context[0]];
 		args._ = true; // Mark the statement as unterminated
-		args.c = cursor.value; // Callee
-		args.cP = cursor.valueParent; // CalleeParent
+		args.c = cursor.v; // Callee
+		args.cP = cursor.vP; // CalleeParent
 		args.d = false; // Start as not dirty
 		cursor.stack.unshift(args);
-		cursor.value = undef;
-		cursor.valueParent = cursor.context[0];
+		cursor.v = undef;
+		cursor.vP = cursor.context[0];
 	},
-	"callClose": function (cursor) {
+	"call-": function (cursor) {
 		// Pop the stack and then call the new stack head
 		// with the popped value
 		var args = cursor.stack.shift();
@@ -99,20 +101,20 @@ var tokenExecutionHandlers = {
 		if (typeof cursor.callee !== __function)
 			throw "Type error: " + typeof(cursor.callee) + " is not a " + __function + " : " + cursor.parsedStr;
 		cursor.stack[0][0] = cursor.callee.apply(args.cP, args.reverse());
-		cursor.value = cursor.stack[0][0];
+		cursor.v = cursor.stack[0][0];
 		cursor.s0 = cursor.stack[0];
 		cursor.s0.d = true; // Mark the context as dirty
 	},
-	"arrayOpen": function (cursor) {
+	"arr+": function (cursor) { // Array open
 		cursor.s0.d = true; // Mark the context as dirty
 		cursor.stack.unshift([cursor.context[0]]);
-		cursor.value = undef;
-		cursor.valueParent = cursor.context[0];
+		cursor.v = undef;
+		cursor.vP = cursor.context[0];
 	},
-	"arrayClose": function (cursor) {
+	"arr-": function (cursor) { // Array close
 		// Pop the stack and then call the new stack head
 		// as an array with the popped value
-		cursor.value = cursor.stack.shift();
+		cursor.v = cursor.stack.shift();
 		cursor.s0 = cursor.stack[0];
 		cursor.s0.d = true; // Mark the context as dirty
 		// Prevent an array call on the root context
@@ -120,23 +122,23 @@ var tokenExecutionHandlers = {
 			throw __syntaxError + __illegalCall + cursor.parsedStr;
 		// Prevent an array call on undefined
 		if (cursor.s0[0] === undef)
-			throw "Cannot read property " + cursor.tokens[cursor.i-1][0] + " of undefined : " + cursor.parsedStr;
+			throw __cannotReadProperty + cursor.tokens[cursor.i-1][0] + __ofUndefined + cursor.parsedStr;
 		// Read the new value
-		cursor.value = cursor.s0[0][ cursor.value[0] ];
-		cursor.s0[0] = cursor.value;
+		cursor.v = cursor.s0[0][ cursor.v[0] ];
+		cursor.s0[0] = cursor.v;
 	},
 	"dot": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
-		cursor.valueParent = cursor.value;
-		cursor.value = undef;
+		cursor.vP = cursor.v;
+		cursor.v = undef;
 	},
-	"argsSeparator": function (cursor) {
+	"arg": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
 		//todo: check if the argSeparator is used in a correct setting
 		if (!cursor.s0._)
 			throw __syntaxError + cursor.parsedStr;
-		cursor.value = undef;
-		cursor.valueParent = cursor.context[0];
+		cursor.v = undef;
+		cursor.vP = cursor.context[0];
 		// If the first argument was never set, set as undefined
 		if (cursor.s0[0] === cursor.context[0])
 			cursor.s0[0] = cursor.undef;
@@ -144,42 +146,42 @@ var tokenExecutionHandlers = {
 	},
 	"str": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.value = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
+		cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
 	},
 	"str2": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.value = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
+		cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
 	},
 	"json": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.value = JSON.parse(cursor.tokenStr);
+		cursor.s0[0] = cursor.v = JSON.parse(cursor.tokenStr);
 	},
-	"numeric": function (cursor) {
+	"num": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.value = parseFloat(cursor.tokenStr);
+		cursor.s0[0] = cursor.v = parseFloat(cursor.tokenStr);
 	},
 	"name": function (cursor) {
 		cursor.s0.d = true; // Mark the context as dirty
 		// Else resolve it on the current value
 		if (cursor.s0[0] === undef)
-			throw "Cannot read property '" + cursor.tokenStr + "' of undefined : " + cursor.parsedStr;
-		cursor.value = cursor.s0[0][cursor.tokenStr];
-		cursor.s0[0] = cursor.value;
+			throw __cannotReadProperty + "'" + cursor.tokenStr + "'" + __ofUndefined + cursor.parsedStr;
+		cursor.v = cursor.s0[0][cursor.tokenStr];
+		cursor.s0[0] = cursor.v;
 	},
-	"statementSeparator": function (cursor) {
+	"sep": function (cursor) {
 		//todo: check if the argSeparator is used in a correct setting (unterminated statement)
 		if (cursor.s0._)
 			throw __syntaxError + cursor.parsedStr;
 		// If a new context is dirty (statement has been started)
 		// Store the current value as a candidate for output
-		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value);
+		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.v);
 		cursor.s0.d = false;
 		// Clear the context and values
 		cursor.s0[0] = cursor.context[0];
-		cursor.valueParent = undef;
-		cursor.value = undef;
+		cursor.vP = undef;
+		cursor.v = undef;
 	},
-	"whitespace": function () {}
+	"w": function () {}
 };
 
 /**
@@ -196,8 +198,8 @@ function executeTokens(tokens, context) {
 		//todo: array encapsulation not needed anymore since we simulate
 		//the call stack with the prototype chain
 		stack: [ [context[0]] ],
-		value: undef,
-		valueParent: context[0],
+		v: undef, // value
+		vP: context[0], // valueParent
 		tokens: tokens,
 		tokenStr: undef,
 		statementOutputs: [],
@@ -210,16 +212,16 @@ function executeTokens(tokens, context) {
 
 	for (; cursor.i < tokens.length; cursor.i++) {
 		cursor.s0 = cursor.stack[0];
-		cursor.token = tokens[cursor.i];
-		cursor.tokenStr = cursor.token[0];
-		cursor.state = cursor.token[1];
+		cursor.t = tokens[cursor.i];
+		cursor.tokenStr = cursor.t[0];
+		cursor.state = cursor.t[1];
 		cursor.parsedStr += cursor.tokenStr;
 		tokenExecutionHandlers[cursor.state](cursor);
 	}
 	cursor.s0 = cursor.stack[0];
 	// If a new context is dirty (statement has been started)
 	// Store the current value as a candidate for output
-	if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.value);
+	if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.v);
 	return (cursor.statementOutputs.length) ? cursor.statementOutputs[0] : undef;
 }
 
@@ -227,99 +229,99 @@ function executeTokens(tokens, context) {
 
 var tokenHandlers = {
 	"def": function (cursor) {
-		var state = stateChars[cursor.chr];
+		var state = stateChars[cursor.c];
 		if (state !== undef) cursor.newState = state;
-		if (__charMapNumericStart.indexOf(cursor.chr) + 1) {
-			cursor.newState = "numeric";
-		} else if (__charMapAlphaExtended.indexOf(cursor.chr) + 1) {
+		if (__charMapNumericStart.indexOf(cursor.c) + 1) {
+			cursor.newState = "num";
+		} else if (__charMapAlphaExtended.indexOf(cursor.c) + 1) {
 			cursor.newState = "name";
 		}
 	},
-	"callOpen": function (cursor) {
-		if (cursor.chr !== "(" || (cursor.token.length === 1))
+	"call+": function (cursor) {
+		if (cursor.c !== "(" || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"callClose": function (cursor) {
-		if (cursor.chr !== ")" || (cursor.token.length === 1))
+	"call-": function (cursor) {
+		if (cursor.c !== ")" || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"arrayOpen": function (cursor) {
-		if (cursor.chr !== "[" || (cursor.token.length === 1))
+	"arr+": function (cursor) {
+		if (cursor.c !== "[" || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"arrayClose": function (cursor) {
-		if (cursor.chr !== "]" || (cursor.token.length === 1))
+	"arr-": function (cursor) {
+		if (cursor.c !== "]" || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"statementSeparator": function (cursor) {
-		if (cursor.chr !== ";" || (cursor.token.length === 1))
+	"sep": function (cursor) {
+		if (cursor.c !== ";" || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
 	"dot": function (cursor) {
-		if (cursor.chr !== "." || (cursor.token.length === 1))
+		if (cursor.c !== "." || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"argsSeparator": function (cursor) {
-		if (cursor.chr !== "," || (cursor.token.length === 1))
+	"arg": function (cursor) {
+		if (cursor.c !== "," || (cursor.t.length === 1))
 			cursor.newState = "def";
 	},
-	"whitespace": function (cursor) {
+	"w": function (cursor) {
 		// todo: add other whitespace codes
-		if (__charMapWhiteSpace.indexOf(cursor.chr) < 0)
+		if (__charMapWhiteSpace.indexOf(cursor.c) < 0)
 			cursor.newState = "def";
 	},
 	"str": function (cursor) {
 		// If the last char is a "'""
-		if (cursor.chr === "'") {
+		if (cursor.c === "'") {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
-			if ((cursor.token.length > 1 || cursor.token === "'") && cursor.exp[cursor.i-1] === "\\" ) {
+			if ((cursor.t.length > 1 || cursor.t === "'") && cursor.exp[cursor.i-1] === "\\" ) {
 				cursor.newState = undef;
-				cursor.token = cursor.token.substring(0, cursor.token.length-1);
+				cursor.t = cursor.t.substring(0, cursor.t.length-1);
 			}
 			// If the last char is a "'" and not the first char
-			else if (cursor.token.length > 1) {
+			else if (cursor.t.length > 1) {
 				cursor.newState = "def";
-				cursor.chr = "";
+				cursor.c = "";
 				cursor.i++;
-				cursor.token = cursor.token.substring(0) + "'";
+				cursor.t = cursor.t.substring(0) + "'";
 			}
 		}
 	},
 	// todo: generalize str and str2
 	"str2": function (cursor) {
 		// If the last char is a '"'
-		if (cursor.chr === '"') {
+		if (cursor.c === '"') {
 			//if the character is a "'" and is preceeded by a "\\", then we
 			//update the token and keep going (we remove the escaping)
-			if ((cursor.token.length > 1 || cursor.token === '"') && cursor.exp[cursor.i-1] === "\\" ) {
+			if ((cursor.t.length > 1 || cursor.t === '"') && cursor.exp[cursor.i-1] === "\\" ) {
 				cursor.newState = undef;
-				cursor.token = cursor.token.substring(0, cursor.token.length-1);
+				cursor.t = cursor.t.substring(0, cursor.t.length-1);
 			}
 			// If the last char is a "'" and not the first char
-			else if (cursor.token.length > 1) {
+			else if (cursor.t.length > 1) {
 				cursor.newState = "def";
-				cursor.token = cursor.token.substring(0) + '"';
-				cursor.chr = "";
+				cursor.t = cursor.t.substring(0) + '"';
+				cursor.c = "";
 				cursor.i++;
 			}
 		}
 	},
 	"json": function (cursor) {
-		if (cursor.chr === "{") cursor.braces++;
-		if (cursor.chr === "}") cursor.braces--;
+		if (cursor.c === "{") cursor.braces++;
+		if (cursor.c === "}") cursor.braces--;
 		if (cursor.braces === 0) {
 			cursor.newState = "def";
-			cursor.token += cursor.chr;
+			cursor.t += cursor.c;
 			cursor.i++;
 		}
 	},
-	"numeric": function (cursor) {
-		if (__charMapNumeric.indexOf(cursor.chr) < 0)
+	"num": function (cursor) {
+		if (__charMapNumeric.indexOf(cursor.c) < 0)
 			cursor.newState = "def";
 	},
 	"name" : function (cursor) {
-		if (__charMapAlphaExtendedContinued.indexOf(cursor.chr) < 0)
+		if (__charMapAlphaExtendedContinued.indexOf(cursor.c) < 0)
 			cursor.newState = "def";
 	}
 };
@@ -335,8 +337,8 @@ function tokenizer(exp) {
 	var instructions = [];
 	var cursor = {
 		braces: 0, // The number of brackets accumulated (for json handling)
-		chr: "",
-		token: "",
+		c: "", // .char
+		t: "", // .token
 		exp: exp,
 		state: "def",
 		newState: null,
@@ -347,15 +349,15 @@ function tokenizer(exp) {
 		nextChar(cursor, instructions);
 	}
 	// Push the last token
-	if (cursor.token.length)
-		instructions.push([cursor.token, cursor.state]);
+	if (cursor.t.length)
+		instructions.push([cursor.t, cursor.state]);
 
 	return instructions;
 }
 
 // Parse chars and yeld instructions
 function nextChar(cursor, instructions) {
-	cursor.chr = cursor.exp[cursor.i];
+	cursor.c = cursor.exp[cursor.i];
 	cursor.newState = null;
 	tokenHandlers[cursor.state](cursor);
 
@@ -364,18 +366,18 @@ function nextChar(cursor, instructions) {
 	if (cursor.newState) {
 		// If the current token is not empty,
 		// push it in the instruction stack
-		if (cursor.token)
-			instructions.push([cursor.token, cursor.state]);
+		if (cursor.t)
+			instructions.push([cursor.t, cursor.state]);
 		// Get the new state returned by the state handler
 		cursor.state = cursor.newState;
 		// Flush the token
-		cursor.token = "";
+		cursor.t = "";
 		// Unless the current character has been flushed (like for quotes
 		// around strings, set back the index for the next iteration
 		cursor.i--;
 	} else {
 		// Push the parsing result of that char on the token
-		cursor.token += cursor.chr;
+		cursor.t += cursor.c;
 	}
 }
 
