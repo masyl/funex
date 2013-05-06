@@ -1,3 +1,5 @@
+![Funex logo](doc/images/funex-logo.gif)
+
 [![NPM version](https://badge.fury.io/js/funex.png)](http://badge.fury.io/js/funex)
 [![Build Status](https://travis-ci.org/masyl/funex.png)](https://travis-ci.org/masyl/funex)
 [![Dependency Status](https://gemnasium.com/masyl/funex.png)](https://gemnasium.com/masyl/funex)
@@ -83,38 +85,41 @@ Released in the Public Domain - http://creativecommons.org/publicdomain/zero/1.0
 
 
 ## Roadmap
+
+### v0.3
+
+- Apply unit tests to the minified build
+- Working support of all modern browsers
 - Document : Whitespace support
 - Document : Support for Multi-statement
 - Document : Code Quality and Hygiene
-- Document : Support for inline JSON
+- Document : Support for inline JSON (No litterals)
 - Document : Available Dists
 - Document: Lower cyclomatic complexity : all functions under 5
-- Support for literal object notation (needed?)
-- Measure impact of uncompressible member names on gZipped version of the library
-- Re-avaluate the need for the test runner
-- Automate test suite on the frontend in all browsers (testling or testling)
-- Fix ie9 support
-- Measure impact of uncompressible member names on gZipped version of the library
-- Refactoring: tokenHandler should manipulate a cursor object instead of multiple argument and return values
-- Support evaluation of async expressions with a standard callback
+- A pretty homepage
+- A new logo
+
+### v0.4
+
+- Automate test suite on the frontend in all browsers (testling or sauce labs)
 - Syntax error on unclosed function calls and array gets
-- Syntax error on miss-use of ";"
 - Syntax error on miss-placed string test."string"
 - Syntax error on unterminated statement
-- Test syntax errors on bad json
+
+### v0.5
+
+- A api to tap property access and function calls
 - A tool to try/test funex live
+- Better sample usage
 - 100% Annotated code
-- Test coverage report or integration with coveralls.io
-- Detailed syntax documentation
-- A pretty web-site
-- A new logo
-- Apply unit tests to the minified build
-- Multi-broser tests with Sauce or Testling
-- Only push minimal deps with bower
+- Support evaluation of async expressions with a standard callback
+
+### v0.6
+
 - Capacity setting: multi-statement ()
+- Capacity setting: JSON
 - Capacity setting: true/false primitives (true) 
 - Capacity setting: validator for function calls
 - Capacity setting: validator for property access
 - Capacity setting: validator for value access
-- Low capacity by default
-- Simplify the installed bower package
+
