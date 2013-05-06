@@ -112,8 +112,8 @@ module.exports = function(grunt) {
 
 	// Default task(s).
 	grunt.registerTask('default', ['plato', 'build', 'jshint', 'uglify', 'gzip', 'mochacov:test']);
-	grunt.registerTask('travis', ['mochacov:coverage']);
-	grunt.registerTask('test', ['mochacov:test']);
+	grunt.registerTask('travis', ['build', 'mochacov:coverage']);
+	grunt.registerTask('test', ['build', 'mochacov:test']);
 	grunt.registerTask('rel', function (type) {
 		type = type ? type : 'patch';
 		grunt.task.run('default');

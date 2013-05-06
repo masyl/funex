@@ -7,6 +7,7 @@ var evalComparison = false;
 // Fixture for using an array of objects as the execution context (behaves life memory frames)
 var funex = require("../dist/node/funex");
 var fixtures = require("../test-utils/fixtures-stack");
+var fixturesSingleObject = require("../test-utils/fixtures");
 var runner = require("../test-utils/runner");
 
 // test name, expression, expected
@@ -51,6 +52,12 @@ var tests = [
 		["Multiple statements", "'abcd'; plus3(1, 2, 3);", 6],
 		["Multiple statements with trailing semicolons", "'abcd'; plus3(1, 2, 3);;; ", 6],
 		["Multiple statements in multiline", "'abcd';\n\tplus3(1, 2, 3);\n\tkidsObj['second'];", "Julia"],
+		[
+			"Exception on missplaced statement separator",
+			"plus3(1; 2; 3);",
+			"Syntax error : plus3(1;",
+			{isException: true}
+		],
 		["Inline JSON notation", 'keys({"a":1, "b":2, "c":3, "d": {"abc": 999}})', "a,b,c,d"],
 		["more empty string", "   ''    ",""],
 		[
@@ -133,6 +140,17 @@ var tests = [
 		]
 ];
 
+
 runner(funex, tests, fixtures, cycles, evalComparison);
+runner(funex, tests, fixturesSingleObject, cycles, evalComparison);
+
+
+describe('A simple funex', function () {
+	var testFunex = funex("1");
+	it('Should equal 1 when called without a context', function() {
+		var result = testFunex();
+		result.should.equal(1);
+	});
+});
 
 

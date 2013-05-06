@@ -1,4 +1,4 @@
-/*! funex v0.2.21 for Browsers | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
+/*! funex v0.2.26 for Browsers | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
 (function (global) {
 "use strict";
 
