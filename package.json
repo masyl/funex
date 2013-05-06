@@ -1,7 +1,7 @@
 {
   "name": "funex",
   "description": "Module for evaluating functional expressions",
-  "version": "0.2.37",
+  "version": "0.2.38",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
     "expression",
@@ -34,7 +34,7 @@
       "url": "http://creativecommons.org/publicdomain/zero/1.0/"
     }
   ],
-  "main": "src/funex.js",
+  "main": "dist/node/funex.js",
   "scripts": {
     "blanket": {
       "pattern": [
