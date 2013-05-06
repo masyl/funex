@@ -1,7 +1,7 @@
 {
   "name": "funex",
   "description": "Module for evaluating functional expressions",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "homepage": "https://github.com/masyl/funex",
   "keywords": [
     "expression",
@@ -38,7 +38,7 @@
   "scripts": {
     "blanket": {
       "pattern": [
-        "/dist/**/*.js"
+        "dist"
       ]
     },
     "test": "grunt test --verbose"
@@ -54,7 +54,7 @@
     "grunt-plato": "~0.2.0",
     "grunt-contrib-jshint": "~0.4.3",
     "grunt-release": "git://github.com/masyl/grunt-release.git",
-    "grunt-mocha-cov": "~0.0.4",
+    "grunt-mocha-cov": "git://github.com/masyl/grunt-mocha-cov.git",
     "grunt-bumpup": "~0.2.0",
     "grunt-exec": "~0.4.0",
     "grunt-wrap": "~0.2.0"
