@@ -1,4 +1,4 @@
-/*! funex v0.2.26 for AMD loaders | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
+/*! funex v0.2.27 for AMD loaders | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
 (function (define) {
 "use strict";
 

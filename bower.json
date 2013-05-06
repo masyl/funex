@@ -1,8 +1,10 @@
 {
   "name": "funex",
-  "version": "0.2.27",
-  "main": "dist/funex.js",
+  "version": "0.2.28",
+  "main": "dist/browser/funex.js",
   "ignore": [
+    "dist/node",
+    "dist/node/funex.min.js",
     "**/.*",
     "**/*.js.gz",
     "package.json",
@@ -11,6 +13,7 @@
     "components",
     "test",
     "test-utils",
-    "doc"
+    "doc",
+    "src"
   ]
 }
