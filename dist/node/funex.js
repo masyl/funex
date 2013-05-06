@@ -1,4 +1,4 @@
-/*! funex v0.2.27 for Node.js | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
+/*! funex v0.2.36 for Node.js | 2013-05-06 | No Copyright - Released in the Public Domain by Mathieu Sylvain  */
 "use strict";
 	
 
