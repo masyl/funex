@@ -38,7 +38,7 @@
   "scripts": {
     "blanket": {
       "pattern": [
-        "/src/funex.js"
+        "/dist/**/*.js"
       ]
     },
     "test": "grunt test --verbose"

@@ -83,17 +83,17 @@ Released in the Public Domain - http://creativecommons.org/publicdomain/zero/1.0
 
 
 ## Roadmap
-- Create browser version with closure using grunt
 - Document : Whitespace support
 - Document : Support for Multi-statement
 - Document : Code Quality and Hygiene
-- Document : Support for inline JSON 
+- Document : Support for inline JSON
+- Document : Available Dists
+- Document: Lower cyclomatic complexity : all functions under 5
 - Support for literal object notation (needed?)
 - Measure impact of uncompressible member names on gZipped version of the library
 - Re-avaluate the need for the test runner
 - Automate test suite on the frontend in all browsers (testling or testling)
 - Fix ie9 support
-- Lower cyclomatic complexity : all functions under 5
 - Measure impact of uncompressible member names on gZipped version of the library
 - Refactoring: tokenHandler should manipulate a cursor object instead of multiple argument and return values
 - Support evaluation of async expressions with a standard callback
@@ -102,7 +102,7 @@ Released in the Public Domain - http://creativecommons.org/publicdomain/zero/1.0
 - Syntax error on miss-placed string test."string"
 - Syntax error on unterminated statement
 - Test syntax errors on bad json
-- A tool to test funex live
+- A tool to try/test funex live
 - 100% Annotated code
 - Test coverage report or integration with coveralls.io
 - Detailed syntax documentation
