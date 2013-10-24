@@ -1,3 +1,4 @@
+"use strict";
 
 // Local definition of undefined
 var undef = void 0;
@@ -395,7 +396,7 @@ function compiledProxy(context) {
  * Compile a funex string expression into a executable function
  * @param exp
  */
-function compile(exp) {
+this.compile = function compile(exp) {
 		return compiledProxy.bind(tokenizer(exp.trim()));
 }
 
