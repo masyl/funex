@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.81</p>
+      <p class="stat">65.99</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">398</p>
+      <p class="stat">405</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">117.88</p>
+      <p class="stat">116.68</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">4.19</p>
+      <p class="stat">4.22</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,405 +90,411 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">// Local definition of undefined
-var undef = void 0;
+    <textarea id="file-source" class="col-md-12">(function (global) {
+	&quot;use strict&quot;;
 
-// String constants
-var __function = "function";
-var __illegalCall = "Illegal call : ";
-var __syntaxError = "Syntax error : ";
-var __cannotReadProperty = "Cannot read property ";
-var __ofUndefined = " of undefined : ";
+	// Local definition of undefined
+	var undef = void 0;
 
-// Character maps
-var __charMapNumericStart = "1234567890-";
-var __charMapWhiteSpace = " \n\t";
-var __charMapNumeric = __charMapNumericStart + ".";
-var __charMapAlpha = "abcdefghijklmnopqrstuvwxyz";
-var __charMapAlphaExtended = __charMapAlpha + __charMapAlpha.toUpperCase() + "_$";
-var __charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericStart;
+	// String constants
+	var __function = &quot;function&quot;;
+	var __illegalCall = &quot;Illegal call : &quot;;
+	var __syntaxError = &quot;Syntax error : &quot;;
+	var __cannotReadProperty = &quot;Cannot read property &quot;;
+	var __ofUndefined = &quot; of undefined : &quot;;
 
-// State Entry Characters
-var stateChars = {
-	"{": "json",
-	"(": "call+",
-	")": "call-",
-	"[": "arr+",
-	"]": "arr-",
-	".": "dot", // Dot notation
-	",": "arg", // Argument separator
-	" ": "w",
-	"\n": "w",
-	"\t": "w", // whitespaces
-	"'": "str", // Single Quoted Strings
-	'"': "str2", // Double Quoted Strings
-	";": "sep" // Statement separator
-};
+	// Character maps
+	var __charMapNumericStart = &quot;1234567890-&quot;;
+	var __charMapWhiteSpace = &quot; \n\t&quot;;
+	var __charMapNumeric = __charMapNumericStart + &quot;.&quot;;
+	var __charMapAlpha = &quot;abcdefghijklmnopqrstuvwxyz&quot;;
+	var __charMapAlphaExtended = __charMapAlpha + __charMapAlpha.toUpperCase() + &quot;_$&quot;;
+	var __charMapAlphaExtendedContinued = __charMapAlphaExtended + __charMapNumericStart;
+
+	// State Entry Characters
+	var stateChars = {
+		&quot;{&quot;: &quot;json&quot;,
+		&quot;(&quot;: &quot;call+&quot;,
+		&quot;)&quot;: &quot;call-&quot;,
+		&quot;[&quot;: &quot;arr+&quot;,
+		&quot;]&quot;: &quot;arr-&quot;,
+		&quot;.&quot;: &quot;dot&quot;, // Dot notation
+		&quot;,&quot;: &quot;arg&quot;, // Argument separator
+		&quot; &quot;: &quot;w&quot;,
+		&quot;\n&quot;: &quot;w&quot;,
+		&quot;\t&quot;: &quot;w&quot;, // whitespaces
+		&quot;&#039;&quot;: &quot;str&quot;, // Single Quoted Strings
+		&#039;&quot;&#039;: &quot;str2&quot;, // Double Quoted Strings
+		&quot;;&quot;: &quot;sep&quot; // Statement separator
+	};
 
 
-/**
- * Takes an array of objects and creates a prototype chain
- * that can simulate a stack of memory frames
- * @param framesArray An array of objects to be used as memory frames
- */
-function memoryStackFactory(framesArray) {
-	// Ensure that the provided array will not be muted during
-	// the recursions
-	return memoryStackFactoryIterator(framesArray.slice(0));
-}
-function memoryStackFactoryIterator(framesArray) {
-	var referenceObj = framesArray.shift();
-	if (framesArray.length > 0) {
-		// *** Special note: Event if the prototype keeps being reassigned, the object
-		// that has been created from it will remember the construction work
-		// that the original prototype did
-		MemoryStackFactoryFrame.prototype = memoryStackFactoryIterator(framesArray);
+	/**
+	 * Takes an array of objects and creates a prototype chain
+	 * that can simulate a stack of memory frames
+	 * @param framesArray An array of objects to be used as memory frames
+	 */
+	function memoryStackFactory(framesArray) {
+		// Ensure that the provided array will not be muted during
+		// the recursions
+		return memoryStackFactoryIterator(framesArray.slice(0));
 	}
-	return new MemoryStackFactoryFrame(referenceObj);
-}
-function MemoryStackFactoryFrame(obj) {
-	for (var key in obj) {
-		if (obj.hasOwnProperty(key)) {
-			this[key] = obj[key];
+	function memoryStackFactoryIterator(framesArray) {
+		var referenceObj = framesArray.shift();
+		if (framesArray.length &gt; 0) {
+			// *** Special note: Event if the prototype keeps being reassigned, the object
+			// that has been created from it will remember the construction work
+			// that the original prototype did
+			MemoryStackFactoryFrame.prototype = memoryStackFactoryIterator(framesArray);
+		}
+		return new MemoryStackFactoryFrame(referenceObj);
+	}
+	function MemoryStackFactoryFrame(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				this[key] = obj[key];
+			}
 		}
 	}
-}
 
 
 
 
-var tokenExecutionHandlers = {
-	"def": function (cursor) {
-		throw __syntaxError + cursor.parsedStr;
-	},
-	"call+": function (cursor) {
-		if (cursor.s0[0] === cursor.context[0]) // Prevent a function call on undefined
-			throw __syntaxError + __illegalCall + cursor.parsedStr;
-
-		cursor.s0.d = true; // Mark the context as dirty
-		// Add a fresh context in the stack
-		var args = [cursor.context[0]];
-		args._ = true; // Mark the statement as unterminated
-		args.c = cursor.v; // Callee
-		args.cP = cursor.vP; // CalleeParent
-		args.d = false; // Start as not dirty
-		cursor.stack.unshift(args);
-		cursor.v = undef;
-		cursor.vP = cursor.context[0];
-	},
-	"call-": function (cursor) {
-		// Pop the stack and then call the new stack head
-		// with the popped value
-		var args = cursor.stack.shift();
-		cursor.callee = args.c; // Should callee really be in the cursor ?
-		if (!args._)
-			throw __syntaxError + __illegalCall + cursor.parsedStr;
-
-		// Reverse the argument into the correct order
-		if (typeof cursor.callee !== __function)
-			throw "Type error: " + typeof(cursor.callee) + " is not a " + __function + " : " + cursor.parsedStr;
-		cursor.stack[0][0] = cursor.callee.apply(args.cP, args.reverse());
-		cursor.v = cursor.stack[0][0];
-		cursor.s0 = cursor.stack[0];
-		cursor.s0.d = true; // Mark the context as dirty
-	},
-	"arr+": function (cursor) { // Array open
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.stack.unshift([cursor.context[0]]);
-		cursor.v = undef;
-		cursor.vP = cursor.context[0];
-	},
-	"arr-": function (cursor) { // Array close
-		// Pop the stack and then call the new stack head
-		// as an array with the popped value
-		cursor.v = cursor.stack.shift();
-		cursor.s0 = cursor.stack[0];
-		cursor.s0.d = true; // Mark the context as dirty
-		// Prevent an array call on the root context
-		if (cursor.s0[0] === cursor.context[0])
-			throw __syntaxError + __illegalCall + cursor.parsedStr;
-		// Prevent an array call on undefined
-		if (cursor.s0[0] === undef)
-			throw __cannotReadProperty + cursor.tokens[cursor.i-1][0] + __ofUndefined + cursor.parsedStr;
-		// Read the new value
-		cursor.v = cursor.s0[0][ cursor.v[0] ];
-		cursor.s0[0] = cursor.v;
-	},
-	"dot": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.vP = cursor.v;
-		cursor.v = undef;
-	},
-	"arg": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		//todo: check if the argSeparator is used in a correct setting
-		if (!cursor.s0._)
+	var tokenExecutionHandlers = {
+		&quot;def&quot;: function (cursor) {
 			throw __syntaxError + cursor.parsedStr;
-		cursor.v = undef;
-		cursor.vP = cursor.context[0];
-		// If the first argument was never set, set as undefined
-		if (cursor.s0[0] === cursor.context[0])
-			cursor.s0[0] = cursor.undef;
-		cursor.s0.unshift(cursor.context[0]);
-	},
-	"str": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
-	},
-	"str2": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
-	},
-	"json": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.v = JSON.parse(cursor.tokenStr);
-	},
-	"num": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		cursor.s0[0] = cursor.v = parseFloat(cursor.tokenStr);
-	},
-	"name": function (cursor) {
-		cursor.s0.d = true; // Mark the context as dirty
-		// Else resolve it on the current value
-		if (cursor.s0[0] === undef)
-			throw __cannotReadProperty + "'" + cursor.tokenStr + "'" + __ofUndefined + cursor.parsedStr;
-		cursor.v = cursor.s0[0][cursor.tokenStr];
-		cursor.s0[0] = cursor.v;
-	},
-	"sep": function (cursor) {
-		//todo: check if the argSeparator is used in a correct setting (unterminated statement)
-		if (cursor.s0._)
-			throw __syntaxError + cursor.parsedStr;
+		},
+		&quot;call+&quot;: function (cursor) {
+			if (cursor.s0[0] === cursor.context[0]) // Prevent a function call on undefined
+				throw __syntaxError + __illegalCall + cursor.parsedStr;
+
+			cursor.s0.d = true; // Mark the context as dirty
+			// Add a fresh context in the stack
+			var args = [cursor.context[0]];
+			args._ = true; // Mark the statement as unterminated
+			args.c = cursor.v; // Callee
+			args.cP = cursor.vP; // CalleeParent
+			args.d = false; // Start as not dirty
+			cursor.stack.unshift(args);
+			cursor.v = undef;
+			cursor.vP = cursor.context[0];
+		},
+		&quot;call-&quot;: function (cursor) {
+			// Pop the stack and then call the new stack head
+			// with the popped value
+			var args = cursor.stack.shift();
+			cursor.callee = args.c; // Should callee really be in the cursor ?
+			if (!args._)
+				throw __syntaxError + __illegalCall + cursor.parsedStr;
+
+			// Reverse the argument into the correct order
+			if (typeof cursor.callee !== __function)
+				throw &quot;Type error: &quot; + typeof(cursor.callee) + &quot; is not a &quot; + __function + &quot; : &quot; + cursor.parsedStr;
+			cursor.stack[0][0] = cursor.callee.apply(args.cP, args.reverse());
+			cursor.v = cursor.stack[0][0];
+			cursor.s0 = cursor.stack[0];
+			cursor.s0.d = true; // Mark the context as dirty
+		},
+		&quot;arr+&quot;: function (cursor) { // Array open
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.stack.unshift([cursor.context[0]]);
+			cursor.v = undef;
+			cursor.vP = cursor.context[0];
+		},
+		&quot;arr-&quot;: function (cursor) { // Array close
+			// Pop the stack and then call the new stack head
+			// as an array with the popped value
+			cursor.v = cursor.stack.shift();
+			cursor.s0 = cursor.stack[0];
+			cursor.s0.d = true; // Mark the context as dirty
+			// Prevent an array call on the root context
+			if (cursor.s0[0] === cursor.context[0])
+				throw __syntaxError + __illegalCall + cursor.parsedStr;
+			// Prevent an array call on undefined
+			if (cursor.s0[0] === undef)
+				throw __cannotReadProperty + cursor.tokens[cursor.i-1][0] + __ofUndefined + cursor.parsedStr;
+			// Read the new value
+			cursor.v = cursor.s0[0][ cursor.v[0] ];
+			cursor.s0[0] = cursor.v;
+		},
+		&quot;dot&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.vP = cursor.v;
+			cursor.v = undef;
+		},
+		&quot;arg&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			//todo: check if the argSeparator is used in a correct setting
+			if (!cursor.s0._)
+				throw __syntaxError + cursor.parsedStr;
+			cursor.v = undef;
+			cursor.vP = cursor.context[0];
+			// If the first argument was never set, set as undefined
+			if (cursor.s0[0] === cursor.context[0])
+				cursor.s0[0] = cursor.undef;
+			cursor.s0.unshift(cursor.context[0]);
+		},
+		&quot;str&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
+		},
+		&quot;str2&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.s0[0] = cursor.v = cursor.tokenStr.substring(1, cursor.tokenStr.length-1);
+		},
+		&quot;json&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.s0[0] = cursor.v = JSON.parse(cursor.tokenStr);
+		},
+		&quot;num&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			cursor.s0[0] = cursor.v = parseFloat(cursor.tokenStr);
+		},
+		&quot;name&quot;: function (cursor) {
+			cursor.s0.d = true; // Mark the context as dirty
+			// Else resolve it on the current value
+			if (cursor.s0[0] === undef)
+				throw __cannotReadProperty + &quot;&#039;&quot; + cursor.tokenStr + &quot;&#039;&quot; + __ofUndefined + cursor.parsedStr;
+			cursor.v = cursor.s0[0][cursor.tokenStr];
+			cursor.s0[0] = cursor.v;
+		},
+		&quot;sep&quot;: function (cursor) {
+			//todo: check if the argSeparator is used in a correct setting (unterminated statement)
+			if (cursor.s0._)
+				throw __syntaxError + cursor.parsedStr;
+			// If a new context is dirty (statement has been started)
+			// Store the current value as a candidate for output
+			if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.v);
+			cursor.s0.d = false;
+			// Clear the context and values
+			cursor.s0[0] = cursor.context[0];
+			cursor.vP = undef;
+			cursor.v = undef;
+		},
+		&quot;w&quot;: function () {}
+	};
+
+	/**
+	 * Execute the instructions dictated by code tokens
+	 * @param tokens
+	 * @param context
+	 */
+	function executeTokens(tokens, context) {
+		// todo: cursor has too much, should be simplified
+		var cursor = {
+			state: undef,
+			s0: undef, // Shorthand for the first item of the call stack
+			context: context,
+			//todo: array encapsulation not needed anymore since we simulate
+			//the call stack with the prototype chain
+			stack: [ [context[0]] ],
+			v: undef, // value
+			vP: context[0], // valueParent
+			tokens: tokens,
+			tokenStr: undef,
+			statementOutputs: [],
+			parsedStr: &quot;&quot;,
+			callee: undef,
+			i: 0
+		};
+
+		cursor.stack[0].d = false; // Set the current context as no dirty 
+
+		for (; cursor.i &lt; tokens.length; cursor.i++) {
+			cursor.s0 = cursor.stack[0];
+			cursor.t = tokens[cursor.i];
+			cursor.tokenStr = cursor.t[0];
+			cursor.state = cursor.t[1];
+			cursor.parsedStr += cursor.tokenStr;
+			tokenExecutionHandlers[cursor.state](cursor);
+		}
+		cursor.s0 = cursor.stack[0];
 		// If a new context is dirty (statement has been started)
 		// Store the current value as a candidate for output
 		if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.v);
-		cursor.s0.d = false;
-		// Clear the context and values
-		cursor.s0[0] = cursor.context[0];
-		cursor.vP = undef;
-		cursor.v = undef;
-	},
-	"w": function () {}
-};
-
-/**
- * Execute the instructions dictated by code tokens
- * @param tokens
- * @param context
- */
-function executeTokens(tokens, context) {
-	// todo: cursor has too much, should be simplified
-	var cursor = {
-		state: undef,
-		s0: undef, // Shorthand for the first item of the call stack
-		context: context,
-		//todo: array encapsulation not needed anymore since we simulate
-		//the call stack with the prototype chain
-		stack: [ [context[0]] ],
-		v: undef, // value
-		vP: context[0], // valueParent
-		tokens: tokens,
-		tokenStr: undef,
-		statementOutputs: [],
-		parsedStr: "",
-		callee: undef,
-		i: 0
-	};
-
-	cursor.stack[0].d = false; // Set the current context as no dirty 
-
-	for (; cursor.i < tokens.length; cursor.i++) {
-		cursor.s0 = cursor.stack[0];
-		cursor.t = tokens[cursor.i];
-		cursor.tokenStr = cursor.t[0];
-		cursor.state = cursor.t[1];
-		cursor.parsedStr += cursor.tokenStr;
-		tokenExecutionHandlers[cursor.state](cursor);
+		return (cursor.statementOutputs.length) ? cursor.statementOutputs[0] : undef;
 	}
-	cursor.s0 = cursor.stack[0];
-	// If a new context is dirty (statement has been started)
-	// Store the current value as a candidate for output
-	if (cursor.s0.d) cursor.statementOutputs.unshift(cursor.v);
-	return (cursor.statementOutputs.length) ? cursor.statementOutputs[0] : undef;
-}
 
-// Define token handlers
+	// Define token handlers
 
-var tokenHandlers = {
-	"def": function (cursor) {
-		var state = stateChars[cursor.c];
-		if (state !== undef) cursor.newState = state;
-		if (__charMapNumericStart.indexOf(cursor.c) + 1) {
-			cursor.newState = "num";
-		} else if (__charMapAlphaExtended.indexOf(cursor.c) + 1) {
-			cursor.newState = "name";
-		}
-	},
-	"call+": function (cursor) {
-		if (cursor.c !== "(" || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"call-": function (cursor) {
-		if (cursor.c !== ")" || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"arr+": function (cursor) {
-		if (cursor.c !== "[" || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"arr-": function (cursor) {
-		if (cursor.c !== "]" || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"sep": function (cursor) {
-		if (cursor.c !== ";" || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"dot": function (cursor) {
-		if (cursor.c !== "." || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"arg": function (cursor) {
-		if (cursor.c !== "," || (cursor.t.length === 1))
-			cursor.newState = "def";
-	},
-	"w": function (cursor) {
-		// todo: add other whitespace codes
-		if (__charMapWhiteSpace.indexOf(cursor.c) < 0)
-			cursor.newState = "def";
-	},
-	"str": function (cursor) {
-		// If the last char is a "'""
-		if (cursor.c === "'") {
-			//if the character is a "'" and is preceeded by a "\\", then we
-			//update the token and keep going (we remove the escaping)
-			if ((cursor.t.length > 1 || cursor.t === "'") && cursor.exp[cursor.i-1] === "\\" ) {
-				cursor.newState = undef;
-				cursor.t = cursor.t.substring(0, cursor.t.length-1);
+	var tokenHandlers = {
+		&quot;def&quot;: function (cursor) {
+			var state = stateChars[cursor.c];
+			if (state !== undef) cursor.newState = state;
+			if (__charMapNumericStart.indexOf(cursor.c) + 1) {
+				cursor.newState = &quot;num&quot;;
+			} else if (__charMapAlphaExtended.indexOf(cursor.c) + 1) {
+				cursor.newState = &quot;name&quot;;
 			}
-			// If the last char is a "'" and not the first char
-			else if (cursor.t.length > 1) {
-				cursor.newState = "def";
-				cursor.c = "";
-				cursor.i++;
-				cursor.t = cursor.t.substring(0) + "'";
+		},
+		&quot;call+&quot;: function (cursor) {
+			if (cursor.c !== &quot;(&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;call-&quot;: function (cursor) {
+			if (cursor.c !== &quot;)&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;arr+&quot;: function (cursor) {
+			if (cursor.c !== &quot;[&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;arr-&quot;: function (cursor) {
+			if (cursor.c !== &quot;]&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;sep&quot;: function (cursor) {
+			if (cursor.c !== &quot;;&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;dot&quot;: function (cursor) {
+			if (cursor.c !== &quot;.&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;arg&quot;: function (cursor) {
+			if (cursor.c !== &quot;,&quot; || (cursor.t.length === 1))
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;w&quot;: function (cursor) {
+			// todo: add other whitespace codes
+			if (__charMapWhiteSpace.indexOf(cursor.c) &lt; 0)
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;str&quot;: function (cursor) {
+			// If the last char is a &quot;&#039;&quot;&quot;
+			if (cursor.c === &quot;&#039;&quot;) {
+				//if the character is a &quot;&#039;&quot; and is preceeded by a &quot;\\&quot;, then we
+				//update the token and keep going (we remove the escaping)
+				if ((cursor.t.length &gt; 1 || cursor.t === &quot;&#039;&quot;) &amp;&amp; cursor.exp[cursor.i-1] === &quot;\\&quot; ) {
+					cursor.newState = undef;
+					cursor.t = cursor.t.substring(0, cursor.t.length-1);
+				}
+				// If the last char is a &quot;&#039;&quot; and not the first char
+				else if (cursor.t.length &gt; 1) {
+					cursor.newState = &quot;def&quot;;
+					cursor.c = &quot;&quot;;
+					cursor.i++;
+					cursor.t = cursor.t.substring(0) + &quot;&#039;&quot;;
+				}
 			}
-		}
-	},
-	// todo: generalize str and str2
-	"str2": function (cursor) {
-		// If the last char is a '"'
-		if (cursor.c === '"') {
-			//if the character is a "'" and is preceeded by a "\\", then we
-			//update the token and keep going (we remove the escaping)
-			if ((cursor.t.length > 1 || cursor.t === '"') && cursor.exp[cursor.i-1] === "\\" ) {
-				cursor.newState = undef;
-				cursor.t = cursor.t.substring(0, cursor.t.length-1);
+		},
+		// todo: generalize str and str2
+		&quot;str2&quot;: function (cursor) {
+			// If the last char is a &#039;&quot;&#039;
+			if (cursor.c === &#039;&quot;&#039;) {
+				//if the character is a &quot;&#039;&quot; and is preceeded by a &quot;\\&quot;, then we
+				//update the token and keep going (we remove the escaping)
+				if ((cursor.t.length &gt; 1 || cursor.t === &#039;&quot;&#039;) &amp;&amp; cursor.exp[cursor.i-1] === &quot;\\&quot; ) {
+					cursor.newState = undef;
+					cursor.t = cursor.t.substring(0, cursor.t.length-1);
+				}
+				// If the last char is a &quot;&#039;&quot; and not the first char
+				else if (cursor.t.length &gt; 1) {
+					cursor.newState = &quot;def&quot;;
+					cursor.t = cursor.t.substring(0) + &#039;&quot;&#039;;
+					cursor.c = &quot;&quot;;
+					cursor.i++;
+				}
 			}
-			// If the last char is a "'" and not the first char
-			else if (cursor.t.length > 1) {
-				cursor.newState = "def";
-				cursor.t = cursor.t.substring(0) + '"';
-				cursor.c = "";
+		},
+		&quot;json&quot;: function (cursor) {
+			if (cursor.c === &quot;{&quot;) cursor.braces++;
+			if (cursor.c === &quot;}&quot;) cursor.braces--;
+			if (cursor.braces === 0) {
+				cursor.newState = &quot;def&quot;;
+				cursor.t += cursor.c;
 				cursor.i++;
 			}
+		},
+		&quot;num&quot;: function (cursor) {
+			if (__charMapNumeric.indexOf(cursor.c) &lt; 0)
+				cursor.newState = &quot;def&quot;;
+		},
+		&quot;name&quot; : function (cursor) {
+			if (__charMapAlphaExtendedContinued.indexOf(cursor.c) &lt; 0)
+				cursor.newState = &quot;def&quot;;
 		}
-	},
-	"json": function (cursor) {
-		if (cursor.c === "{") cursor.braces++;
-		if (cursor.c === "}") cursor.braces--;
-		if (cursor.braces === 0) {
-			cursor.newState = "def";
-			cursor.t += cursor.c;
-			cursor.i++;
-		}
-	},
-	"num": function (cursor) {
-		if (__charMapNumeric.indexOf(cursor.c) < 0)
-			cursor.newState = "def";
-	},
-	"name" : function (cursor) {
-		if (__charMapAlphaExtendedContinued.indexOf(cursor.c) < 0)
-			cursor.newState = "def";
-	}
-};
-
-
-
-
-/**
- * Parse a funex string into a stack of tokens
- * @param exp
- */
-function tokenizer(exp) {
-	var instructions = [];
-	var cursor = {
-		braces: 0, // The number of brackets accumulated (for json handling)
-		c: "", // .char
-		t: "", // .token
-		exp: exp,
-		state: "def",
-		newState: null,
-		i: 0
 	};
-	// Parse the expression char by char
-	for (; cursor.i < cursor.exp.length; cursor.i++) {
-		nextChar(cursor, instructions);
-	}
-	// Push the last token
-	if (cursor.t.length)
-		instructions.push([cursor.t, cursor.state]);
 
-	return instructions;
-}
 
-// Parse chars and yeld instructions
-function nextChar(cursor, instructions) {
-	cursor.c = cursor.exp[cursor.i];
-	cursor.newState = null;
-	tokenHandlers[cursor.state](cursor);
 
-	// If state changed, set the new state push the token on the
-	// stack of tokens and start a new token
-	if (cursor.newState) {
-		// If the current token is not empty,
-		// push it in the instruction stack
-		if (cursor.t)
+
+	/**
+	 * Parse a funex string into a stack of tokens
+	 * @param exp
+	 */
+	function tokenizer(exp) {
+		var instructions = [];
+		var cursor = {
+			braces: 0, // The number of brackets accumulated (for json handling)
+			c: &quot;&quot;, // .char
+			t: &quot;&quot;, // .token
+			exp: exp,
+			state: &quot;def&quot;,
+			newState: null,
+			i: 0
+		};
+		// Parse the expression char by char
+		for (; cursor.i &lt; cursor.exp.length; cursor.i++) {
+			nextChar(cursor, instructions);
+		}
+		// Push the last token
+		if (cursor.t.length)
 			instructions.push([cursor.t, cursor.state]);
-		// Get the new state returned by the state handler
-		cursor.state = cursor.newState;
-		// Flush the token
-		cursor.t = "";
-		// Unless the current character has been flushed (like for quotes
-		// around strings, set back the index for the next iteration
-		cursor.i--;
-	} else {
-		// Push the parsing result of that char on the token
-		cursor.t += cursor.c;
+
+		return instructions;
 	}
-}
 
-function compiledProxy(context) {
-	// If no context was provided, create an empty one.
-	if (typeof context === "undefined")
-		context = [{}];
-	//If the context is not already an array, create a one-level stack
-	if (context.constructor.name !== "Array")
-		context = [context];
+	// Parse chars and yeld instructions
+	function nextChar(cursor, instructions) {
+		cursor.c = cursor.exp[cursor.i];
+		cursor.newState = null;
+		tokenHandlers[cursor.state](cursor);
 
-	// todo: remove needless array over memoryStackFactory
-	// "this" is the list of tokens
-	/*jshint validthis:true */
-	return executeTokens(this, [memoryStackFactory(context)]);
-}
+		// If state changed, set the new state push the token on the
+		// stack of tokens and start a new token
+		if (cursor.newState) {
+			// If the current token is not empty,
+			// push it in the instruction stack
+			if (cursor.t)
+				instructions.push([cursor.t, cursor.state]);
+			// Get the new state returned by the state handler
+			cursor.state = cursor.newState;
+			// Flush the token
+			cursor.t = &quot;&quot;;
+			// Unless the current character has been flushed (like for quotes
+			// around strings, set back the index for the next iteration
+			cursor.i--;
+		} else {
+			// Push the parsing result of that char on the token
+			cursor.t += cursor.c;
+		}
+	}
 
-/**
- * Compile a funex string expression into a executable function
- * @param exp
- */
-function compile(exp) {
-		return compiledProxy.bind(tokenizer(exp.trim()));
-}</textarea>
+	function compiledProxy(context) {
+		// If no context was provided, create an empty one.
+		if (typeof context === &quot;undefined&quot;)
+			context = [{}];
+		//If the context is not already an array, create a one-level stack
+		if (context.constructor.name !== &quot;Array&quot;)
+			context = [context];
+
+		// todo: remove needless array over memoryStackFactory
+		// &quot;this&quot; is the list of tokens
+		/*jshint validthis:true */
+		return executeTokens(this, [memoryStackFactory(context)]);
+	}
+
+	/**
+	 * Compile a funex string expression into a executable function
+	 * @param exp
+	 */
+
+	global.compile = function compile(exp) {
+			return compiledProxy.bind(tokenizer(exp.trim()));
+	};
+
+}(this));</textarea>
   </div>
 </div>
 

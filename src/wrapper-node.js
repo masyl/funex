@@ -3,4 +3,4 @@
 	
 {source}
 
-module.exports = compile;
+module.exports = this.compile;
