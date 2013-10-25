@@ -399,3 +399,4 @@ function compiledProxy(context) {
 this.compile = function compile(exp) {
 		return compiledProxy.bind(tokenizer(exp.trim()));
 }
+
